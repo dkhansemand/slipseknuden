@@ -1,0 +1,25 @@
+﻿1,Shoon Slips, Klassisk Brun, Et klassisk slips til den brune habit
+,900;
+2,Shoon Slips,Stribet Stil, Sort stribet - et rigtigt direktørslips, 650;
+
+3,Korea Special, Brudgommens favorit, Skal du giftes? så skal det være det her!
+,350;
+4,US Imports,Sølvpil,  Er du til fest og farver så vælg dette fantastiske slips.
+,600;
+5,US Imports, Rød F11, Slipset til den store charmør :-)
+,700;
+6,Sleek Fabrics UK, Blå kant, køb vores blå slips til barnedåben!
+,560;
+7,Sleek Fabrics UK, Fars favorit, klassisk slips med et twist
+.,900;
+8,Sleek Fabrics UK, Sort nat, slipset til den ultra stilbeviste,900;
+9,Shoon Slips, Blue, Blåt med striber.,450;
+10,Sleek Fabrics UK, Tern, Perfekt til den klassiske blå skjorte.,800;
+11,US Imports, Ræven, Lækkert ræverødt slips.,790;
+12,Korea Special,Kinini, Et lækkert slips i høj kvalitet
+.,780;
+13,Sleek Fabrics UK, Europa, et lækkert slips i en super kvalitet.
+,500;
+14,Korea Special,Kina,Et super slips fra vores kinesiske designer
+
+,800;

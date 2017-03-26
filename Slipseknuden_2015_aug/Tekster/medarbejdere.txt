@@ -1,0 +1,4 @@
+Anders Hansen,		Direktør,		chefen@slipseknuden.eu 
+Annelise Johnson,	Sekretær,		info@@slipseknuden.eu 
+Jan Frandsen,		Sælger,		jf@slipseknuden.eu 
+Joe Baylie,			Sælger,		jb@slipseknuden.eu
