@@ -6,7 +6,7 @@
             $infoArr = array();
 
             ## Select nessecary information to form from DB
-            $queryCat = $conn->newQuery("SELECT categoryid, categoryName FROM categories;");
+            $queryCat = $conn->newQuery("SELECT categoryId, categoryName FROM categories;");
             $queryPic = $conn->newQuery("SELECT pictureid, picturefilename, pictureTypeFolderPath FROM pictures
             INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId;");    
             
@@ -91,8 +91,8 @@
 
                     if($errCount === 0){
                         $queryUpdate = $conn->newQuery("UPDATE products
-                                                        productCategoryId = :CATID, productDescription = :DETAILS,
-                                                        productPicture = :PICTUREID, productPrice = :PRICE, productName = :TITLE
+                                                       SET productCategoryId = :CATID, productDescription = :DETAILS,
+                                                        productPictureId = :PICTUREID, productPrice = :PRICE, productName = :TITLE
                                                         WHERE productId = :ID;");
                         $queryUpdate->bindParam(':TITLE', $productName, PDO::PARAM_STR);   
                         $queryUpdate->bindParam(':DETAILS', $productDetails, PDO::PARAM_STR);      
@@ -143,16 +143,16 @@
             $pid = (int)$_GET['id'];
 
             $getPicture = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTypeFolderPath FROM products
-                INNER JOIN pictures ON pictureId = productPicture
+                INNER JOIN pictures ON pictureId = productPictureId
                 INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
              WHERE productId = :ID");
             $getPicture->bindParam(':ID', $pid, PDO::PARAM_INT);
             if($getPicture->execute()){
                 $filename = $getPicture->fetch(PDO::FETCH_ASSOC);
                 $pictureId = $filename['pictureId'];
-                    $pictureDir = '../assets/media/'. $filename['pictureTypeFolderPath'];
+                    $pictureDir = '../assets/media/'. $filename['pictureTypeFolderPath'] . '/';
                 
-            }
+            } 
             
             $queryDelete = $conn->newQuery("DELETE FROM products WHERE productId = :ID; DELETE FROM pictures WHERE pictureId = :PICID");
             $queryDelete->bindParam(':ID', $pid, PDO::PARAM_INT);
@@ -342,10 +342,10 @@
                                             <td><?=$products[$productCount]['productDescription']?></td>
                                             <td><?=$products[$productCount]['productPrice']?></td>
                                             <td><?=$products[$productCount]['categoryName']?></td>
-                                            <td><img src="../assets/media/<?=$products[$productCount]['pictureTypeFolderPath'].'/'.$products[$productCount]['pictureFilename']?>" alt="<?=$products[$productCount]['pictureTitle']?>" height="85" width="auto"></td>
+                                            <td><img src="../assets/media/<?=$products[$productCount]['pictureTypeFolderPath'].'/'.$products[$productCount]['pictureFilename']?>" alt="<?=$products[$productCount]['pictureName']?>" height="85" width="auto"></td>
                                             <td>
                                                 <a href="./index.php?p=Products&option=View&id=<?=$products[$productCount]['productId']?>" class="btn btn-info">Ret</a>
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteProd" data-productName="<?=$products[$productCount]['productTitle']?>" data-pid="<?=$products[$productCount]['pid']?>">Slet</button>
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteProd" data-productName="<?=$products[$productCount]['productName']?>" data-pid="<?=$products[$productCount]['productId']?>">Slet</button>
                                                 
                                             </td>
                                         </tr>
@@ -421,7 +421,7 @@
                                     <?php
                                         foreach($infoArr['Cat'] as $Category){
                                     ?>
-                                        <option value="<?=$Category['catid']?>"><?=$Category['categoryName']?></option>
+                                        <option value="<?=$Category['categoryId']?>"><?=$Category['categoryName']?></option>
 
                                         <?php
                                         }
@@ -558,7 +558,7 @@
                                 <?php
                                     foreach($infoArr['Cat'] as $Category){
                                 ?>
-                                        <option value="<?=$Category['catid']?>" <?= $productView['categoryName'] === $Category['categoryName'] ? 'selected':''?>><?=utf8_encode($Category['categoryName'])?></option>
+                                        <option value="<?=$Category['categoryId']?>" <?= $productView['categoryName'] === $Category['categoryName'] ? 'selected':''?>><?=utf8_encode($Category['categoryName'])?></option>
                                     <?php
                                     }
                                     ?>
