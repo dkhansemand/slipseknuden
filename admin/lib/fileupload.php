@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 ini_set('html_errors', false);
-require_once '../../lib/class.mysql.php';
+require_once '../../assets/lib/class.mysql.php';
 
 if($_POST){
     ##print_r($_POST);
@@ -13,20 +13,23 @@ if($_POST){
 
                     $title = filter_var($_POST['pictureTitle'], FILTER_SANITIZE_STRING);
                     if($_POST['pictureAssign'] == 1){
-                        $uploadDir = '../../prod_image/';
+                        $uploadDir = '../../assets/media/products/';
+                        $picType = 'products';
                         (int)$isProduct = 1;
                     }else{
-                        $uploadDir = '../../img/';
+                        $uploadDir = '../../assets/media/';
                         (int)$isProduct = 0;
                     }
                     
                     $conn = new dbconnector();
-                    $queryPicture = $conn->newQuery("INSERT INTO hifi_pictures (pictureFilename, pictureTitle, pictureIsProduct)VALUES(:PICTUREFILE, :PICTURETITLE, :ISPRODUCT);");
+                    $queryPicture = $conn->newQuery("INSERT INTO pictures (pictureFilename, pictureTitle, pictureTypeId)VALUES(:PICTUREFILE, :PICTURETITLE, (SELECT pictureTypeId FROM pictureType WHERE pictureTypeName = :PICTYPE));");
                     $queryPicture->bindParam(':PICTUREFILE', $filename, PDO::PARAM_STR);
                     $queryPicture->bindParam(':PICTURETITLE', $_POST['pictureTitle'], PDO::PARAM_STR);
-                    $queryPicture->bindParam(':ISPRODUCT', $isProduct, PDO::PARAM_INT);
+                    $queryPicture->bindParam(':PICTYPE', $picType, PDO::PARAM_INT);
 
-                    $queryPictureLast = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTitle, pictureIsProduct FROM hifi_pictures WHERE pictureFilename = :PICTUREFILE;");
+                    $queryPictureLast = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTitle, pictureType.pictureTypeId FROM pictures 
+                    INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+                    WHERE pictureFilename = :PICTUREFILE;");
                     $queryPictureLast->bindParam(':PICTUREFILE', $filename, PDO::PARAM_STR);
 
                     if($queryPicture->execute() && $queryPictureLast->execute()){

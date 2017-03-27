@@ -61,7 +61,7 @@ $(document).ready( () => {
                 contentType: false,
                 processData: false,
                 success: (res) => {
-                    //console.log('Success: ', res);
+                    console.log('Success: ', res);
                     if(res.errState === 0){
                         $('#errMsg').hide();
                         $('#successMsg').toggleClass('hidden').html(res.msg);
@@ -69,13 +69,13 @@ $(document).ready( () => {
                         $('#pictureProductForm input[type=file]').val('');
                         //let imgbase = 'prod_image';
                         
-                        if(res.queryResponse.pictureIsProduct == 1){
+                        if(res.queryResponse.pictureTypeId === '1'){
                             let newOption = `
                             <option value="${res.queryResponse.pictureId}" selected>${res.queryResponse.pictureFilename}</option>
                             `;
                             $('#productPic').attr({selectedIndex : -1});
                             $('#productPic').append(newOption);
-                            $("#showPic").attr("src","../prod_image/" + res.queryResponse.pictureFilename);
+                            $("#showPic").attr("src","../assets/media/products/" + res.queryResponse.pictureFilename);
                         }
                     }
                     if(res.errState === 1){
@@ -85,7 +85,7 @@ $(document).ready( () => {
                 },
                 error: (res) => {
                     console.log('Error: ', res);
-                    $('#errMsg').toggleClass('hidden').html(res);
+                    $('#errMsg').toggleClass('hidden').html(res.responseText);
                     
                 },
                 // Custom XMLHttpRequest
@@ -139,13 +139,13 @@ $(document).ready( () => {
                 contentType: false,
                 processData: false,
                 success: (res) => {
-                    //console.log('Success: ', res);
+                    console.log('Success2: ', res);
                     if(res.errState === 0){
                         $('#errMsg').hide();
                         $('#successMsg').toggleClass('hidden').html(res.msg);
                         $('#pictureTitle').val('');
                         $('#pictureUploadForm input[type=file]').val('');
-                        let imgbase = res.queryResponse.pictureIsProduct == 1 ? 'prod_image' : 'img';
+                        let imgbase = res.queryResponse.pictureTypeId == 1 ? 'products' : 'img';
                         let productImg = `
                         <div class="col-sm-6 col-md-4 col-lg-4">
                             <div class="panel panel-primary">
@@ -153,7 +153,7 @@ $(document).ready( () => {
                                     - <small>${res.queryResponse.pictureTitle}</small>
                                 </div>
                                 <div class="panel-body">
-                                    <img src="../${imgbase}/${res.queryResponse.pictureFilename}" height="85" width="125" alt="${res.queryResponse.pictureTitle}">
+                                    <img src="../assets/media/${imgbase}/${res.queryResponse.pictureFilename}" height="85" width="125" alt="${res.queryResponse.pictureTitle}">
                                 </div>
                             <div class="panel-footer">
                                 <a href="./index.php?p=Pictures&option=Delete&id=${res.queryResponse.pictureId}" class="btn btn-danger" role="button">Slet</a>
@@ -161,8 +161,8 @@ $(document).ready( () => {
                         </div>
                         </div>
                         `;
-                        if(res.queryResponse.pictureIsProduct == 1){
-                            imgbase = 'prod_image';
+                        if(res.queryResponse.pictureTypeId === '1'){
+                            imgbase = 'products';
                             $('#productPictures .row').append(productImg);
                         }else{
                             imgbase = 'img';
@@ -176,7 +176,7 @@ $(document).ready( () => {
                 },
                 error: (res) => {
                     console.log('Error: ', res);
-                    $('#errMsg').toggleClass('hidden').html(res);
+                    $('#errMsg').toggleClass('hidden').html(res.responseText);
                     
                 },
                 // Custom XMLHttpRequest

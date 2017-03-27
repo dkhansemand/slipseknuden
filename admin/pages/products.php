@@ -42,7 +42,7 @@
                     }
 
                     if($errCount === 0){
-                        $queryInsert = $conn->newQuery("INSERT INTO products (productName, productDescription, productprice, productPicture, productCategoryId)
+                        $queryInsert = $conn->newQuery("INSERT INTO products (productName, productDescription, productprice, productPictureId, productCategoryId)
                                                         VALUES(:NAME, :DETAILS, :PRICE, :PICTUREID, :CATID)");
                         $queryInsert->bindParam(':NAME', $productName, PDO::PARAM_STR);   
                         $queryInsert->bindParam(':DETAILS', $productDetails, PDO::PARAM_STR);      
@@ -421,26 +421,14 @@
                                     <?php
                                         foreach($infoArr['Cat'] as $Category){
                                     ?>
-                                        <option value="<?=$Category['catid']?>"><?=utf8_encode($Category['categoryName'])?></option>
+                                        <option value="<?=$Category['catid']?>"><?=$Category['categoryName']?></option>
 
                                         <?php
                                         }
                                         ?>
                                 </select>
                             </div><br>
-                            <div class="input-group">
-                                <label for="basic-url">Mærke</label>
-                                <select name="brand">
-                                    <?php
-                                        foreach($infoArr['Brand'] as $Brand){
-                                    ?>
-                                        <option value="<?=$Brand['bid']?>"><?=utf8_encode($Brand['brandName'])?></option>
-
-                                        <?php
-                                        }
-                                        ?>
-                                </select>
-                            </div><br>
+                            
                             <div class="input-group">
                                 <label for="basic-url">Produkt billede</label>
                                 
@@ -448,7 +436,7 @@
                                         <?php
                                         foreach($infoArr['Pic'] as $Picture){
                                     ?>
-                                        <option value="<?=$Picture['pictureid']?>"><?=utf8_encode($Picture['picturefilename'])?></option>
+                                        <option value="<?=$Picture['pictureid']?>"><?=$Picture['picturefilename']?></option>
 
                                         <?php
                                         }
@@ -462,10 +450,10 @@
                                 <script>
                                     $(document).ready(()=>{
                                         var picture = $('#productPic option:selected').text();
-                                            $("#showPic").attr("src","../assets/media/<?=$infoArr['Pic']['pictureTypeFolderPath']?>" + picture);
+                                            $("#showPic").attr("src","../assets/media/products/" + picture);
                                         $('#productPic').on('change', function() {
                                             var picture = $('#productPic option:selected').text();
-                                            $("#showPic").attr("src","../assets/media/<?=$infoArr['Pic']['pictureTypeFolderPath']?>" + picture);
+                                            $("#showPic").attr("src","../assets/media/products/" + picture);
                                         });
                                     });
                                     </script>
