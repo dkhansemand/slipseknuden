@@ -5,7 +5,7 @@
     if(!empty($_POST)){
         if(!empty($_POST['username']) && !empty($_POST['password'])){
             ## Import dbconnetor class
-            require_once '../lib/class.mysql.php';
+            require_once '../assets/lib/class.mysql.php';
             
             ## Create global connection variable
             $conn = new dbconnector();
@@ -13,13 +13,13 @@
             $username = $_POST['username'];
             $password = $_POST['password'];
 
-            $query = $conn->newQuery("SELECT userId, username, userPwd, userRole FROM hifi_users WHERE username = :username");
+            $query = $conn->newQuery("SELECT userId, username, userPassword, userRole FROM users WHERE username = :username");
             $query->bindParam(':username', $username, PDO::PARAM_STR);
             $query->execute();
             if($query->rowCount() === 1){
                 $result = $query->fetch(PDO::FETCH_ASSOC);
 
-                if(password_verify($password, $result['userPwd'])){
+                if(password_verify($password, $result['userPassword'])){
                     $_SESSION['userId'] = $result['userId'];
                     $_SESSION['username'] = $result['username'];
                     $_SESSION['userRole'] = $result['userRole'];
@@ -62,7 +62,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HiFi - Kontrolpanel</title>
+    <title>Slipseknuden - Kontrolpanel</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -96,7 +96,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="./">HiFi Kontrolpanel</a>
+                <a class="navbar-brand" href="./">Slipseknuden Kontrolpanel</a>
             </div>
             <!-- Top Menu Items -->
            

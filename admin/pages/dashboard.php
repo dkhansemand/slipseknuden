@@ -1,5 +1,5 @@
 <?php
-  $getNewMessages = $conn->newQuery("SELECT COUNT(cmIsOpened) AS new FROM hifi_contactmessages");
+  $getNewMessages = $conn->newQuery("SELECT COUNT(contactIsRead) AS new FROM contactmessages");
   $getNewMessages->execute();
   $newMessages = $getNewMessages->fetch();
 ?>
@@ -13,7 +13,7 @@
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             Kontrolpanel
-                            <small> - HiFi</small>
+                            <small> - Slipseknuden</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">

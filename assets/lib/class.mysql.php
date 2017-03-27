@@ -4,12 +4,12 @@ class dbconnector {
     const   SERVER = 'localhost',
             USERNAME = 'root',
             PASSWORD = '',
-            DATABASE = 'hifishop';
+            DATABASE = 'slipseknuden';
 
 
     private function newPDOConn(){
          try{
-            $PDOConn = new PDO("mysql:host=".self::SERVER.";dbname=".self::DATABASE, self::USERNAME, self::PASSWORD,
+            $PDOConn = new PDO("mysql:host=".self::SERVER.";dbname=".self::DATABASE.";charset=utf8", self::USERNAME, self::PASSWORD,
             array(
                 PDO::ATTR_TIMEOUT => 10,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -23,10 +23,10 @@ class dbconnector {
     public function testConnection(){
         try{
             $conn = $this->newPDOConn();
-            echo "Connection is working fine to server: " . self::SERVER;
+            return "Connection is working fine to server: " . self::SERVER;
         }catch(PDOExecption $err){
             $conn = null;
-            echo 'Connection failed: ' . $err->getMessage();
+            return 'Connection failed: ' . $err->getMessage();
         }
     }
 

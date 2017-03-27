@@ -17,6 +17,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
     <script src="./assets/js/appController.js"></script>
+    <style>
+    .fullwidth{
+      width: 100%;
+    }
+      </style>
   </head>
 
   <body ng-app="slipseknuden">
@@ -56,21 +61,22 @@
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
+  </header>
+  <div class="container">
       <div class="row">
         <div class="col-md-5">
           <img src="./assets/media/logo.jpg" alt="">
         </div>
       </div>
-  </header>
 
 <div class="row">
   <div class="col-lg-3 col-md-4">
     <div class="row">
-      <div class="col-lg-10 col-lg-offset-1 col-md-offset-1">
+      <div class="col-lg-8 col-md-8 col-lg-offset-1 col-md-offset-1">
         <h3>Produkter</h3>
-        <nav class="navbar navbar-inverse navbar-left" role="navigation">
-            <ul class="nav nav-pills nav-stacked">
-              <li><a href="#" class="col-lg-offset-1 col-md-offset-1">Alle</a></li>
+        <nav class="navbar navbar-inverse navbar-left fullwidth" role="navigation" ng-controller="categoryController">
+            <ul class="nav nav-pills nav-stacked" ng-repeat="category in categories">
+              <li><a href="#Produkter/{{category.categoryId}}" class="col-lg-offset-1 col-md-offset-1">{{category.categoryName}}</a></li>
             </ul>
         </nav>
       </div>
@@ -82,15 +88,26 @@
     </div>
   </div>
 
-    <main class="col-lg-9 col-md-8 pull-right" ng-view>
+    <main class="col-lg-9 col-md-8" ng-view>
         
     </main>
 
-</div>
+  </div>
 
       <footer ng-controller="footerControl">
-
+          <div class="container">
+            <div class="row">
+              <div class="col-md-1">Slipseknuden</div>
+              <div class="col-md-1">Vejnavn</div>
+              <div class="col-md-1">postnr</div>
+              <div class="col-md-1">by</div>
+              <div class="col-md-1">email</div>
+              <div class="col-md-1">web addr.</div>
+              <div class="col-md-1">tlf nr</div>
+            </div>
+          </div>
       </footer>
     </div> 
+  </div>
   </body>
 </html>

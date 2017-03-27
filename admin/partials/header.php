@@ -13,7 +13,7 @@
     }
 
     ## Import dbconnetor class
-    require_once '../lib/class.mysql.php';
+    require_once '../assets/lib/class.mysql.php';
     ## Create global connection variable
     $conn = new dbconnector();
 
@@ -29,7 +29,7 @@
     <meta name="description" content="HiFi Kontrolpanel">
     <meta name="author" content="HiFi">
 
-    <title>HiFi - Kontrolpanel</title>
+    <title>Slipseknuden - Kontrolpanel</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="<?=BASE?>/css/bootstrap.min.css" rel="stylesheet">
@@ -63,7 +63,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="./index.php?p=Dashboard">HiFi - Kontrolpanel</a>
+                <a class="navbar-brand" href="./index.php?p=Dashboard">Slipseknuden - Kontrolpanel</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">

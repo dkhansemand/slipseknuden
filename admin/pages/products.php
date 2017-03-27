@@ -6,9 +6,10 @@
             $infoArr = array();
 
             ## Select nessecary information to form from DB
-            $queryCat = $conn->newQuery("SELECT catid, categoryName FROM hifi_category;");
-            $queryPic = $conn->newQuery("SELECT pictureid, picturefilename FROM hifi_pictures WHERE pictureIsProduct = 1;");    
-            $queryBrand = $conn->newQuery("SELECT bid, brandName FROM hifi_brands;");
+            $queryCat = $conn->newQuery("SELECT categoryid, categoryName FROM categories;");
+            $queryPic = $conn->newQuery("SELECT pictureid, picturefilename, pictureTypeFolderPath FROM pictures
+            INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId;");    
+            
             if($queryCat->execute()){
                 $infoArr['Cat'] = $queryCat->fetchAll(PDO::FETCH_ASSOC);
             }
@@ -16,10 +17,7 @@
                 $infoArr['Pic'] = $queryPic->fetchAll(PDO::FETCH_ASSOC);
                 
             }
-            if($queryBrand->execute()){
-                $infoArr['Brand'] = $queryBrand->fetchAll(PDO::FETCH_ASSOC);
-                
-            }
+            
 
             if(isset($_POST) && isset($_POST['btnAdd'])){
                 if(!empty($_POST['productNameA']) && !empty($_POST['productPrice']) && !empty($_POST['productDetails'])){
@@ -44,12 +42,11 @@
                     }
 
                     if($errCount === 0){
-                        $queryInsert = $conn->newQuery("INSERT INTO hifi_products (productTitle, productDetails, productprice, productBrandId, productPicture, productCategoryId)
-                                                        VALUES(:TITLE, :DETAILS, :PRICE, :BRANDID, :PICTUREID, :CATID)");
-                        $queryInsert->bindParam(':TITLE', $productName, PDO::PARAM_STR);   
+                        $queryInsert = $conn->newQuery("INSERT INTO products (productName, productDescription, productprice, productPicture, productCategoryId)
+                                                        VALUES(:NAME, :DETAILS, :PRICE, :PICTUREID, :CATID)");
+                        $queryInsert->bindParam(':NAME', $productName, PDO::PARAM_STR);   
                         $queryInsert->bindParam(':DETAILS', $productDetails, PDO::PARAM_STR);      
                         $queryInsert->bindParam(':PRICE', $productPrice, PDO::PARAM_STR);     
-                        $queryInsert->bindParam(':BRANDID', $_POST['brand'], PDO::PARAM_INT);   
                         $queryInsert->bindParam(':PICTUREID', $_POST['productPicture'], PDO::PARAM_INT);       
                         $queryInsert->bindParam(':CATID', $_POST['productCategory'], PDO::PARAM_INT);  
 
@@ -93,14 +90,13 @@
                     }
 
                     if($errCount === 0){
-                        $queryUpdate = $conn->newQuery("UPDATE hifi_products
-                                                        SET productBrandId = :BRANDID, productCategoryId = :CATID, productDetails = :DETAILS,
-                                                        productPicture = :PICTUREID, productPrice = :PRICE, productTitle = :TITLE
-                                                        WHERE pid = :ID;");
+                        $queryUpdate = $conn->newQuery("UPDATE products
+                                                        productCategoryId = :CATID, productDescription = :DETAILS,
+                                                        productPicture = :PICTUREID, productPrice = :PRICE, productName = :TITLE
+                                                        WHERE productId = :ID;");
                         $queryUpdate->bindParam(':TITLE', $productName, PDO::PARAM_STR);   
                         $queryUpdate->bindParam(':DETAILS', $productDetails, PDO::PARAM_STR);      
-                        $queryUpdate->bindParam(':PRICE', $productPrice, PDO::PARAM_STR);     
-                        $queryUpdate->bindParam(':BRANDID', $_POST['brand'], PDO::PARAM_INT);   
+                        $queryUpdate->bindParam(':PRICE', $productPrice, PDO::PARAM_STR);  
                         $queryUpdate->bindParam(':PICTUREID', $_POST['productPicture'], PDO::PARAM_INT);       
                         $queryUpdate->bindParam(':CATID', $_POST['productCategory'], PDO::PARAM_INT); 
                         $queryUpdate->bindParam(':ID', $pid, PDO::PARAM_INT); 
@@ -126,15 +122,15 @@
 
         if($getParamOpt === 'View' && !empty($_GET['id'])){
             $productId = (int)$_GET['id'];
-            $queryProduct =  $conn->newQuery(" SELECT pid, productTitle, productDetails, productPrice,
-                                            brandName,
+            $queryProduct =  $conn->newQuery(" SELECT productId, productName, productDescription, productPrice,
+                                            pictureTypeFolderPath,
                                             pictureFilename, pictureTitle,
                                             categoryName
-                                            FROM hifi_products
-                                            LEFT JOIN hifi_category ON catId = productCategoryId
-                                            LEFT JOIN hifi_pictures ON pictureId = productPicture
-                                            LEFT JOIN hifi_brands ON bid = productBrandId
-                                            WHERE pid = :ID
+                                            FROM products
+                                            LEFT JOIN categories ON categoryId = productCategoryId
+                                            LEFT JOIN pictures ON pictureId = productPictureId
+                                            LEFT JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+                                            WHERE productId = :ID
                                         ");
             $queryProduct->bindParam(':ID', $productId, PDO::PARAM_INT);
             if($queryProduct->execute()){
@@ -146,18 +142,19 @@
         if($getParamOpt === 'Delete' && !empty($_GET['id'])){
             $pid = (int)$_GET['id'];
 
-            $getPicture = $conn->newQuery("SELECT pictureId, pictureFilename FROM hifi_products
-                INNER JOIN hifi_pictures ON pictureId = productPicture
-             WHERE pid = :ID");
+            $getPicture = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTypeFolderPath FROM products
+                INNER JOIN pictures ON pictureId = productPicture
+                INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+             WHERE productId = :ID");
             $getPicture->bindParam(':ID', $pid, PDO::PARAM_INT);
             if($getPicture->execute()){
                 $filename = $getPicture->fetch(PDO::FETCH_ASSOC);
                 $pictureId = $filename['pictureId'];
-                    $pictureDir = '../prod_image/';
+                    $pictureDir = '../assets/media/'. $filename['pictureTypeFolderPath'];
                 
             }
             
-            $queryDelete = $conn->newQuery("DELETE FROM hifi_products WHERE pid = :ID; DELETE FROM hifi_pictures WHERE pictureId = :PICID");
+            $queryDelete = $conn->newQuery("DELETE FROM products WHERE productId = :ID; DELETE FROM pictures WHERE pictureId = :PICID");
             $queryDelete->bindParam(':ID', $pid, PDO::PARAM_INT);
             $queryDelete->bindParam(':PICID', $pictureId, PDO::PARAM_INT);
 
@@ -217,15 +214,15 @@
 
     }else{
     
-        $queryProducts = $conn->newQuery(" SELECT pid, productTitle, productDetails, productPrice,
-                                            brandName,
+        $queryProducts = $conn->newQuery("SELECT productId, productName, productDescription, productPrice,
+                                            pictureTypeFolderPath,
                                             pictureFilename, pictureTitle,
                                             categoryName
-                                            FROM hifi_products
-                                            LEFT JOIN hifi_category ON catId = productCategoryId
-                                            LEFT JOIN hifi_pictures ON pictureId = productPicture
-                                            LEFT JOIN hifi_brands ON bid = productBrandId
-                                            
+                                            FROM products
+                                            LEFT JOIN categories ON categoryId = productCategoryId
+                                            LEFT JOIN pictures ON pictureId = productPictureId
+                                            LEFT JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+   
                                         ");
         if($queryProducts->execute()){
             $products = $queryProducts->fetchAll(PDO::FETCH_ASSOC);
@@ -265,7 +262,7 @@
                             if(@$getParamOpt === 'View'){
                             ?>
                                 <li class="active">
-                                    <a href="./index.php?p=Products&option=View&id=<?=$productId?>"><?=$productView['brandName'] . ' - ' . $productView['productTitle']?></a>
+                                    <a href="./index.php?p=Products&option=View&id=<?=$productId?>"><?=$productView['categoryName'] . ' - ' . $productView['productName']?></a>
                                 </li>
                             <?php
                             }
@@ -331,7 +328,6 @@
                                 <th>Titel</th>
                                 <th>Beskrivelse</th>
                                 <th>Pris (DKK)</th>
-                                <th>Mærke</th>
                                 <th>Kategori</th>
                                 <th>Billede</th>
                                 <th>Redigér<th>
@@ -342,14 +338,13 @@
                                         for($productCount = 0; $productCount < count($products); $productCount++){
                                         ?>
                                         <tr>
-                                            <td><?=$products[$productCount]['productTitle']?></td>
-                                            <td><?=$products[$productCount]['productDetails']?></td>
+                                            <td><?=$products[$productCount]['productName']?></td>
+                                            <td><?=$products[$productCount]['productDescription']?></td>
                                             <td><?=$products[$productCount]['productPrice']?></td>
-                                            <td><?=$products[$productCount]['brandName']?></td>
-                                            <td><?=utf8_encode($products[$productCount]['categoryName'])?></td>
-                                            <td><img src="<?=IMGBASE.'/prod_image/'.$products[$productCount]['pictureFilename']?>" alt="<?=$products[$productCount]['pictureTitle']?>" height="85" width="auto"></td>
+                                            <td><?=$products[$productCount]['categoryName']?></td>
+                                            <td><img src="../assets/media/<?=$products[$productCount]['pictureTypeFolderPath'].'/'.$products[$productCount]['pictureFilename']?>" alt="<?=$products[$productCount]['pictureTitle']?>" height="85" width="auto"></td>
                                             <td>
-                                                <a href="./index.php?p=Products&option=View&id=<?=$products[$productCount]['pid']?>" class="btn btn-info">Ret</a>
+                                                <a href="./index.php?p=Products&option=View&id=<?=$products[$productCount]['productId']?>" class="btn btn-info">Ret</a>
                                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteProd" data-productName="<?=$products[$productCount]['productTitle']?>" data-pid="<?=$products[$productCount]['pid']?>">Slet</button>
                                                 
                                             </td>
@@ -467,10 +462,10 @@
                                 <script>
                                     $(document).ready(()=>{
                                         var picture = $('#productPic option:selected').text();
-                                            $("#showPic").attr("src","<?=IMGBASE?>/prod_image/" + picture);
+                                            $("#showPic").attr("src","../assets/media/<?=$infoArr['Pic']['pictureTypeFolderPath']?>" + picture);
                                         $('#productPic').on('change', function() {
                                             var picture = $('#productPic option:selected').text();
-                                            $("#showPic").attr("src","<?=IMGBASE?>/prod_image/" + picture);
+                                            $("#showPic").attr("src","../assets/media/<?=$infoArr['Pic']['pictureTypeFolderPath']?>" + picture);
                                         });
                                     });
                                     </script>
@@ -552,13 +547,13 @@
     
                             <div class="input-group">
                                 <span class="input-group-addon" id="sizing-addon2">Produkt navn</span>
-                                <input type="text" class="form-control" value="<?=$productView['productTitle']?>" name="productName" id="productNameU" aria-describedby="sizing-addon2" required>
+                                <input type="text" class="form-control" value="<?=$productView['productName']?>" name="productName" id="productNameU" aria-describedby="sizing-addon2" required>
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                 <span class="errMsg"><?=@$errProdName?></span>
                             </div>
                             <div class="input-group">
                                 <label for="">Produkt beskrivelse</label>
-                                <textarea name="productDetails" id="productDetails" class="form-control" col="15" rows="10" required><?=$productView['productDetails']?>
+                                <textarea name="productDetails" id="productDetails" class="form-control" col="15" rows="10" required><?=$productView['productDescription']?>
                                 </textarea>
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                 <span class="errMsg"><?=@$errProdDetails?></span>
@@ -581,19 +576,7 @@
                                     ?>
                                 </select>
                             </div>
-                            <div class="input-group">
-                                <label for="basic-url">Mærke</label>
-                                <select name="brand">
-                                    <?php
-                                        foreach($infoArr['Brand'] as $Brand){
-                                    ?>
-                                        <option value="<?=$Brand['bid']?>" <?= $productView['brandName'] === $Brand['brandName'] ? 'selected':''?>><?=utf8_encode($Brand['brandName'])?></option>
-
-                                        <?php
-                                        }
-                                        ?>
-                                </select>
-                            </div>
+                            
                             <div class="input-group">
                                 <label for="basic-url">Produkt billede</label>
                                 
@@ -610,15 +593,16 @@
                                 <script>
                                     $(document).ready(()=>{
                                         var picture = $('#productPic option:selected').text();
-                                            $("#showPic").attr("src","<?=IMGBASE?>/prod_image/" + picture);
+                                            $("#showPic").attr("src","../assets/media/products/" + picture);
                                         $('#productPic').on('change', function() {
                                             var picture = $('#productPic option:selected').text();
-                                            $("#showPic").attr("src","<?=IMGBASE?>/prod_image/" + picture);
+                                            $("#showPic").attr("src","../assets/media/products/" + picture);
                                         });
                                     });
                                     </script>
                                 <img id="showPic" src="">
                                 <span id="showPic"></span>
+                      
                             </div>
                             <button type="submit" name="btnUpdate" class="btn btn-lg btn-info">Redigér</button>
                         </form>
