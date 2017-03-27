@@ -104,7 +104,7 @@
                             </li>
                             
                             <li>
-                                <a href="./index.php?p=FrontPage"><i class="fa fa-fw fa-home"></i> Forside</a>
+                                <a href="./index.php?p=PageTexts"><i class="fa fa-fw fa-home"></i> Side Tekster</a>
                             </li>
                             <li>
                                 <a href="./index.php?p=Categories"><i class="fa fa-fw fa-list-alt"></i> Kategorier</a>
@@ -115,9 +115,7 @@
                             <li>
                                 <a href="./index.php?p=Products"><i class="fa fa-fw fa-cubes"></i> Produkter</a>
                             </li>
-                            <li>
-                                <a href="./index.php?p=Slider"><i class="fa fa-fw fa-object-group"></i> Slider</a>
-                            </li>
+                            
                         </ul>
                     </li>
                     
