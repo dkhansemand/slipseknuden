@@ -5,7 +5,7 @@
             if(!empty($_POST['categoryName'])){
                 $errCount = 0;
                 $categoryName = $_POST['categoryName'];
-
+                $categoryPos = (int)$_POST['categoryPosition'];
                 if(!preg_match('/\w+$/', $categoryName)){
                     ++$errCount;
                     $errBrandName = 'Feltet må kun indholde bogstaver og tal.';
@@ -18,15 +18,16 @@
                 }
 
                 if($errCount === 0){
-                    $queryAddCat = $conn->newQuery("INSERT INTO hifi_category (categoryName, categoryActive)VALUES(:NAME, :ACTIVE)");
+                    $queryAddCat = $conn->newQuery("INSERT INTO categories (categoryName, categoryActive, categoryPosition)VALUES(:NAME, :ACTIVE, :POSITION)");
                     $queryAddCat->bindParam(':NAME', $categoryName, PDO::PARAM_STR);
                     $queryAddCat->bindParam(':ACTIVE', $isActive, PDO::PARAM_INT);
+                    $queryAddCat->bindParam(':POSITION', $categoryPos, PDO::PARAM_INT);
                     if($queryAddCat->execute()){
                         $success = true;
                         $successErr = false;
                         $successTitle = 'Kategori tilføjet';
                         $successMsg = 'Kategori "' . $categoryName . '" er nu tilføjet til databasen';
-                        unset($categoryName, $isActive);
+                        unset($categoryName, $isActive, $categoryPos);
                     }
                 }else{
                     $success = true;
@@ -45,7 +46,7 @@
             $errCount = 0;
             $catId = (int)$_GET['id'];
             $categoryName = $_POST['categoryName'];
-
+            $categoryPos = (int)$_POST['categoryPosition'];
             if(!preg_match('/\w+$/', $categoryName)){
                 ++$errCount;
                 $errCategoryName = 'Feltet må kun indholde bogstaver og tal.';
@@ -58,16 +59,17 @@
             }
 
             if($errCount === 0){
-                $queryUpdateCategory = $conn->newQuery("UPDATE hifi_category SET categoryName = :NAME, categoryActive = :ACTIVE WHERE catId = :ID");
+                $queryUpdateCategory = $conn->newQuery("UPDATE categories SET categoryName = :NAME, categoryActive = :ACTIVE, categoryPosition = :POSITION WHERE categoryId = :ID");
                 $queryUpdateCategory->bindParam(':NAME', $categoryName, PDO::PARAM_STR);
                 $queryUpdateCategory->bindParam(':ACTIVE', $isActive, PDO::PARAM_INT);
+                $queryUpdateCategory->bindParam(':POSITION', $categoryPos, PDO::PARAM_INT);
                 $queryUpdateCategory->bindParam(':ID', $catId, PDO::PARAM_INT);
                 if($queryUpdateCategory->execute()){
                     $success = true;
                     $successErr = false;
                     $successTitle = 'Kategori Opdateret';
                     $successMsg = 'Kategori "' . $categoryName . '" er nu opdateret i databasen';
-                    unset($categoryName, $isActive);
+                    unset($categoryName, $isActive, $categoryPos);
                 }
             }else{
                 $success = true;
@@ -81,7 +83,7 @@
     if(!empty($_GET['option']) && $_GET['option'] === 'Delete' && !empty($_GET['id'])){
             
             $catId = (int)$_GET['id'];
-            $queryDeleteCat = $conn->newQuery("DELETE FROM hifi_category WHERE catId = :ID");
+            $queryDeleteCat = $conn->newQuery("DELETE FROM categories WHERE categoryId = :ID");
             $queryDeleteCat->bindParam(':ID', $catId, PDO::PARAM_INT);
             if($queryDeleteCat->execute()){
                 ?>
@@ -111,7 +113,7 @@
          }
     
 
-    $queryGetCat = $conn->newQuery("SELECT catId, categoryName, categoryActive FROM hifi_category ORDER BY categoryName ASC");
+    $queryGetCat = $conn->newQuery("SELECT categoryId, categoryName, categoryActive, categoryPosition FROM categories ORDER BY categoryName ASC");
     $queryGetCat->execute();
     $categories = $queryGetCat->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -257,6 +259,10 @@ $(document).ready( () => {
                                 <span class="errMsg alert-warning"><?=@$errCategoryName?></span>
                             </div><br>
                             <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon3">Position</span>
+                                <input type="number" name="categoryPosition"  min="0"aria-describedby="sizing-addon3">
+                            </div><br>
+                            <div class="input-group">
                                 <span class="input-group-addon" id="sizing-addon3">Aktiveret</span>
                                 <input type="checkbox" name="categoryActive" aria-describedby="sizing-addon3">
                             </div><br>
@@ -274,6 +280,7 @@ $(document).ready( () => {
                         <thead>    
                             <th>Kategori navn</th>
                             <th>Aktivt</th>
+                            <th>Position</th>
                             <th>Ret</th>
                             <th>Slet</th>                    
                         </thead>
@@ -284,25 +291,30 @@ $(document).ready( () => {
                             <tr>
                                 <td>
                                     <?=utf8_encode($category['categoryName'])?>
-                                    <div class="collapse" id="categoryCollapseId<?=$category['catId']?>">
+                                    <div class="collapse" id="categoryCollapseId<?=$category['categoryId']?>">
                                         <div class="well">
                                             <script>
                                                 $(document).ready( () => {
-                                                 $("#categoryFormUpdate<?=$category['catId']?>").keyup( (objForm) => {
+                                                 $("#categoryFormUpdate<?=$category['categoryId']?>").keyup( (objForm) => {
                                                     "use strict";
                                                     if(objForm.target.name === "categoryName"){
-                                                        validateBrand.brandname("#categoryNameU<?=$category['catId']?>");
+                                                        validateBrand.brandname("#categoryNameU<?=$category['categoryId']?>");
                                                     }
                                                 });
                                                 });
                                             </script>
-                                           <form action="./index.php?p=Categories&option=Edit&id=<?=$category['catId']?>" method="post" id="categoryFormUpdate<?=$category['catId']?>">
+                                           <form action="./index.php?p=Categories&option=Edit&id=<?=$category['categoryId']?>" method="post" id="categoryFormUpdate<?=$category['categoryId']?>">
                                             <div class="input-group has-feedback">
                                                 <span class="input-group-addon" id="sizing-addon2">Kategori navn</span>
-                                                <input type="text" class="form-control" placeholder="Kategori navn" name="categoryName" id="categoryNameU<?=$category['catId']?>" value="<?=utf8_encode($category['categoryName'])?>" aria-describedby="sizing-addon2" required>
+                                                <input type="text" class="form-control" placeholder="Kategori navn" name="categoryName" id="categoryNameU<?=$category['categoryId']?>" value="<?=$category['categoryName']?>" aria-describedby="sizing-addon2" required>
                                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                                 <span class="errMsg alert-warning"><?=@$errCategoryName?></span>
                                             </div><br>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="sizing-addon3">Position</span>
+                                                <input type="number" name="categoryPosition"  value="<?=(int)$category['categoryPosition']?>" aria-describedby="sizing-addon3">
+                                            </div><br>
+                                            
                                             <div class="input-group">
                                                 <span class="input-group-addon" id="sizing-addon3">Aktiveret</span>
                                                 <input type="checkbox" name="categoryActive"  <?=$category['categoryActive'] == 1 ? 'checked' : ''?> aria-describedby="sizing-addon3">
@@ -316,13 +328,16 @@ $(document).ready( () => {
                                     <?=$category['categoryActive'] == 1 ? 'Aktiveret' : 'Deaktiveret'?>
                                 </td>
                                 <td>
+                                    <?=$category['categoryPosition']?>
+                                </td>
+                                <td>
                                     
-                                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#categoryCollapseId<?=$category['catId']?>" aria-expanded="false" aria-controls="categoryCollapseId<?=$category['catId']?>">
+                                    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#categoryCollapseId<?=$category['categoryId']?>" aria-expanded="false" aria-controls="categoryCollapseId<?=$category['categoryId']?>">
                                         <i class="fa fa-pencil"></i>
                                     </button>
                                 </td>
                                 <td>
-                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteCategory" data-categoryName="<?=$category['categoryName']?>" data-catId="<?=$category['catId']?>"><i class="fa fa-remove"></i></button>
+                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteCategory" data-categoryName="<?=$category['categoryName']?>" data-catId="<?=$category['categoryId']?>"><i class="fa fa-remove"></i></button>
                                 </td>
                             </tr>
 

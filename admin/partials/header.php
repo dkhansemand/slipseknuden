@@ -102,9 +102,7 @@
                             <li>
                                 <a href="./index.php?p=Pictures"><i class="fa fa-fw fa-picture-o"></i> Billeder</a>
                             </li>
-                            <li>
-                                <a href="./index.php?p=Brands"><i class="fa fa-fw fa-tags"></i> Brands</a>
-                            </li>
+                            
                             <li>
                                 <a href="./index.php?p=FrontPage"><i class="fa fa-fw fa-home"></i> Forside</a>
                             </li>
