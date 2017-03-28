@@ -11,6 +11,18 @@
      if($queryPic->execute()){
         $infoArr['Pic'] = $queryPic->fetchAll(PDO::FETCH_ASSOC);  
     }
+
+    $queryUsers = $conn->newQuery("SELECT userId, username, userEmail, userFirstname, userLastname, 
+                                            userRoleName, pictureFilename, pictureTypeFolderPath
+                                    FROM users
+                                    INNER JOIN userRoles ON roleId = userRole
+                                    INNER JOIN pictures ON userPictureId = pictureId
+                                    INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId AND pictureType.pictureTypeId = 2
+                                    ;");
+    if($queryUsers->execute()){
+        $users = $queryUsers->fetchAll(PDO::FETCH_ASSOC);
+    }                          
+
     if(isset($_GET['option'])){
         $getParamOpt = $_GET['option'];
 
@@ -82,33 +94,6 @@
         }
     }
 
-    ##Quick script to add user - for the tests - ONLY for DEV
-   /* require_once '../../assets/lib/class.mysql.php';
-     $conn = new dbconnector();
-    $username = 'admin';
-    $password = '1234';
-    $firstname = '';
-    $lastname = '';
-    $title = 'Administrator';
-    $email    = 'admin@slipseknuden.shop';
-
-    $options  = array('cost' => 10);
-    $hash     = password_hash($password, PASSWORD_BCRYPT, $options);
-
-    $query = $conn->newQuery("INSERT INTO users (userName, userPassword, userEmail, userFirstname, userLastname, userTitle) VALUES (:username, '$hash', :email, :firstname, :lastname, :title)");
-    $query->bindParam(':username', $username, PDO::PARAM_STR);
-    $query->bindParam(':email', $email, PDO::PARAM_STR);
-    $query->bindParam(':firstname', $firstname, PDO::PARAM_STR);
-    $query->bindParam(':lastname', $lastname, PDO::PARAM_STR);
-    $query->bindParam(':title', $title, PDO::PARAM_STR);
-
-    if($query->execute()){
-        $conn = null;
-        $success = 'Din bruger er nu oprettet!';
-        echo $success;
-        
-    }*/
-
     unset($conn);
 ?>
 <script src="./js/userHandler.js"></script>
@@ -166,7 +151,8 @@
                     <pre>
                     <?=print_r($_GET)?>
                     
-                    <?php print_r($_POST)?>
+                    <?=print_r($_POST)?>
+                    <?=print_r($users)?>
                     </pre>
                 </div>
             </div>
@@ -329,6 +315,64 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                        <h2>Medarbejdere</h2>
+                        <table class="table table-responsive table-bordered table-hover">
+                            <thead>
+                                <th>Brugernavn</th>
+                                <th>Navn</th>
+                                <th>E-mail</th>
+                                <th>Titel</th>
+                                <th>Billede</th>
+                                <th>Redigér<th>
+                            </thead>
+                            <tbody>
+                            <?php
+                                if(!empty($users)){
+                                    foreach($users as $user){
+                                    ?>
+                                        <tr>
+                                            <td><?=$user['username']?></td>
+                                            <td><?=$user['userFirstname'] . ' ' . $user['userLastname']?></td>
+                                            <td><?=$user['userEmail']?></td>
+                                            <td><?=$user['userRoleName']?></td>
+                                            <td><img src="../assets/media/<?=$user['pictureTypeFolderPath']?>/<?=$user['pictureFilename']?>" height="85" width="85"></td>
+                                            <td>
+                                                <a href="./index.php?p=Users&option=Edit&id=<?=$user['userId']?>" class="btn btn-info">Ret</a>
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteUser" data-username="<?=$user['username']?>" data-userId="<?=$user['userId']?>">Slet</button>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                }
+                            ?>
+                            </tbody>
+                        </table>
+                        <!-- Modal -->
+                        
+                        <div class="modal fade" id="modalDeleteUser" tabindex="-1" role="dialog" aria-labelledby="ModalDeleteLbl">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Slet medarbejder?</h4>
+                                </div>
+                                <div class="modal-body">
+                                    Er du sikker på, at du vil slette medarbejder "<span id="username"></span>"?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Anullér</button>
+                                    <button type="button" id="btnDeleteUser" class="btn btn-danger">Slet medarbejder</button>
+                                    
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
 
     </div>
 
