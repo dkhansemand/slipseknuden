@@ -179,6 +179,80 @@
                 $user = $queryUser->fetch(PDO::FETCH_ASSOC);
             }
         }
+
+
+        if($getParamOpt === 'Delete' && !empty($_GET['id'])){
+            $userId = (int)$_GET['id'];
+
+            $getPicture = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTypeFolderPath FROM users
+                INNER JOIN pictures ON pictureId = userPictureId
+                INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+             WHERE userId = :ID");
+            $getPicture->bindParam(':ID', $userId, PDO::PARAM_INT);
+            if($getPicture->execute()){
+                $filename = $getPicture->fetch(PDO::FETCH_ASSOC);
+                $pictureId = $filename['pictureId'];
+                    $pictureDir = '../assets/media/'. $filename['pictureTypeFolderPath'] . '/';
+                
+            } 
+            
+            $queryDelete = $conn->newQuery("DELETE FROM users WHERE userId = :ID; DELETE FROM pictures WHERE pictureId = :PICID");
+            $queryDelete->bindParam(':ID', $pid, PDO::PARAM_INT);
+            $queryDelete->bindParam(':PICID', $pictureId, PDO::PARAM_INT);
+
+            if($queryDelete->execute()){
+                if(unlink($pictureDir . $filename['pictureFilename'])){
+            ?>
+            <script type="text/javascript">
+                $(window).load(function(){
+                    $('.modal').modal('show');
+                });
+            </script>
+            <div class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Medarbejder slettet</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Medarbejder er nu blevet slettet i databasen!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="./index.php?p=Users" class="btn btn-success">OK</a>
+                    </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            <?php
+            }else{
+               ?>
+            <script type="text/javascript">
+                $(window).load(function(){
+                    $('.modal').modal('show');
+                });
+            </script>
+            <div class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Fejl ved sletning</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><?=var_dump(unlink($pictureDir . $filename['pictureFilename']))?></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="./index.php?p=Users" class="btn btn-success">OK</a>
+                    </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            <?php
+            }
+            }
+        }
+
     }
 
     unset($conn);
