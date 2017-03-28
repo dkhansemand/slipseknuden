@@ -56,7 +56,7 @@
                 $queryUpdate->bindParam(':TWIT', $_POST['twitter'], PDO::PARAM_STR);
 
                 if($queryUpdate->execute()){
-                    $productUpdate = $_POST;
+                    
                     $success = true;
                     $successErr = false;
                     $successTitle = 'Oplysniger opdateret!';
