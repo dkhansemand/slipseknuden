@@ -1,6 +1,6 @@
 <?php
     session_start();
-
+ob_start();
     ## Global check for all pages if login session is true
     if(!isset($_SESSION["isLoggedIn"])){
         header('Location: ./login.php');

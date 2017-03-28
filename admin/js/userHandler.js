@@ -285,4 +285,16 @@ $(document).ready( () => {
         }
     });
 
+    var userid;
+    $('#modalDeleteUser').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var username = button.data('username'); 
+        userid = button.data('userid');
+        var modal = $(this);
+        modal.find('#username').text(username);
+    });
+    $('#btnDeleteUser').on('click', ()=>{
+        window.location = './index.php?p=Users&option=Delete&id='+userid;
+    });
+
 });
