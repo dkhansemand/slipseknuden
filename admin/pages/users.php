@@ -92,6 +92,78 @@
                 }
             }
         }
+
+         if(!empty($_POST) && $getParamOpt === 'Edit' && !empty($_GET['id'])){
+              if(!empty($_POST['firstname']) && 
+                !empty($_POST['lastname']) &&
+                !empty($_POST['email'])){
+                
+                $errCount = 0;
+                $userId = (int)$_GET['id'];
+                $firstname = $_POST['firstname'];
+                $lastname = $_POST['lastname'];
+                $email = $_POST['email'];
+                $title = $_POST['userTitle'];
+                $userPicture = $_POST['userPicture'];
+
+                if(!empty($_POST['password']) && !empty($_POST['password2'])){
+                    $passwordOne = $_POST['password'];
+                    $passwordTwo = $_POST['password2'];
+                    if($passwordOne !== $passwordTwo){
+                        ++$errCount;
+                        $errPassword2 = 'Passwords stemmer ikke overens';
+                    }else{
+                        $options  = array('cost' => 10);
+                        $hash     = password_hash($passwordOne, PASSWORD_BCRYPT, $options);
+                        $sqlPwd = ", userPassword = '" . $hash . "' ";
+                    }
+                }
+
+                
+                if(!preg_match('/^[a-zA-ZÆØÅæøå\s-]+$/', $firstname)){
+                    ++$errCount;
+                    $errFirstname = 'Feltet må kun indholde bogstaver og - .';
+                }
+                if(!preg_match('/^[a-zA-ZÆØÅæøå\s-]+$/', $lastname)){
+                    ++$errCount;
+                    $errLastname = 'Feltet må kun indholde bogstaver og - .';
+                }
+                if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+                    ++$errCount;
+                    $errEmail = 'Emailen er ikke skrevet korrekt.';
+                }
+                
+
+                if($errCount === 0){
+                    
+                    $queryUpdate = $conn->newQuery("UPDATE users 
+                    SET userFirstname = :firstname, userLastname = :lastname, userEmail = :email, userpictureId = :PICID, userRole = :ROLE " . @$sqlPwd . "
+                    WHERE userId = :USERID;");
+
+                    $queryUpdate->bindParam(':USERID', $userId, PDO::PARAM_INT);
+                    $queryUpdate->bindParam(':email', $email, PDO::PARAM_STR);
+                    $queryUpdate->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+                    $queryUpdate->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+                    $queryUpdate->bindParam(':PICID', $userPicture, PDO::PARAM_INT);
+                    $queryUpdate->bindParam(':ROLE', $title, PDO::PARAM_INT);
+
+                    if($queryUpdate->execute()){
+                        $success = true;
+                        $successErr = false;
+                        $successTitle = 'Medarbejder redigéret!';
+                        $successMsg = 'Medarbejder er nu redigéret!';
+                        unset($errCount, $username, $firstname, $lastname, $email, $passwordOne, $passwordTwo);   
+                    }                
+                }else{
+                    $success = true;
+                    $successErr = true;
+                    $successTitle = 'Fejl i indtastning!';
+                    $successMsg = 'Alle felter skal udfyldes og være i korrekt format.';
+                }
+            }
+
+         }
+
         if($getParamOpt === 'Edit' && !empty($_GET['id'])){
             $userId = (int)$_GET['id'];
 
@@ -360,10 +432,10 @@
                         </div>
                     </div>
                     <div class="panel-body">
-                               <form action="./index.php?p=Users&option=Add" method="post" id="userAddForm">
+                               <form action="./index.php?p=Users&option=Edit&id=<?=$user['userId']?>" method="post" id="userAddForm">
                                     <div class="input-group has-feedback">
                                         <span class="input-group-addon" id="sizing-addon1">Brugernavn</span>
-                                        <input type="text" class="form-control" placeholder="brugernavn" name="username" id="username" value="<?=@$user['username']?>" aria-describedby="sizing-addon1" required>
+                                        <input type="text" class="form-control" placeholder="brugernavn" name="username" id="username" value="<?=@$user['username']?>" aria-describedby="sizing-addon1" disabled>
                                         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                         <span class="errMsg alert-warning"><?=@$errUsername?></span>
                                     </div><br>
@@ -433,14 +505,14 @@
 
                                     <div class="input-group has-feedback">
                                         <span class="input-group-addon" id="sizing-addon5">Password</span>
-                                        <input type="password" class="form-control" name="password" id="password" aria-describedby="sizing-addon5" required>
+                                        <input type="password" class="form-control" name="password" id="password" aria-describedby="sizing-addon5">
                                         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                         <span class="errMsg alert-warning"><?=@$errPassword?></span>
                                     </div><br>
 
                                     <div class="input-group has-feedback">
                                         <span class="input-group-addon" id="sizing-addon6">Gentag Password</span>
-                                        <input type="password" class="form-control" name="password2" id="password2" aria-describedby="sizing-addon6" required>
+                                        <input type="password" class="form-control" name="password2" id="password2" aria-describedby="sizing-addon6">
                                         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                         <span class="errMsg alert-warning"><?=@$errPassword2?></span>
                                     </div><br>
