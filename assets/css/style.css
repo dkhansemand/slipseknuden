@@ -1,0 +1,9 @@
+.fullwidth{
+    width: 100%;
+}
+.sideMenu{
+    border-bottom: 2px solid #fff;
+}
+/*.sideMenu:nth-last-of-type(){
+    border-bottom: 0;
+}*/

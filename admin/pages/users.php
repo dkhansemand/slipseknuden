@@ -1,4 +1,16 @@
 <?php
+    require_once '../assets/lib/class.mysql.php';
+    $conn = new dbconnector();
+    $queryUserTitle =  $conn->newQuery("SELECT roleId, userRoleName FROM userRoles");
+    $queryPic = $conn->newQuery("SELECT pictureid, picturefilename, pictureTypeFolderPath FROM pictures
+            INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId AND pictureType.pictureTypeId = 2;");    
+
+    if($queryUserTitle->execute()){
+        $infoArr['userTitle'] =  $queryUserTitle->fetchAll(PDO::FETCH_ASSOC);
+    }
+     if($queryPic->execute()){
+        $infoArr['Pic'] = $queryPic->fetchAll(PDO::FETCH_ASSOC);  
+    }
 
     ##Quick script to add user - for the tests - ONLY for DEV
    /* require_once '../../assets/lib/class.mysql.php';
@@ -27,7 +39,7 @@
         
     }*/
 
-
+    unset($conn);
 ?>
 <script src="./js/userHandler.js"></script>
 <div id="page-wrapper">
@@ -153,7 +165,7 @@
                                     <div class="input-group">
                                 <label for="basic-url">Medarbejder billede</label>
                                 
-                                <select id="UserPic" name="userPicture">
+                                <select id="userPic" name="userPicture">
                                         <?php
                                         foreach($infoArr['Pic'] as $Picture){
                                     ?>
@@ -180,7 +192,21 @@
                                     </script>
                                 <img id="showPic" src="">
                                 <span id="showPic"></span>
-                            </div>
+                            </div><br>
+
+                                    <div class="input-group has-feedback">
+                                        <span class="input-group-addon" id="sizing-addon5">Password</span>
+                                        <input type="password" class="form-control" name="password" id="password" aria-describedby="sizing-addon5" required>
+                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                        <span class="errMsg alert-warning"><?=@$errPassword?></span>
+                                    </div><br>
+
+                                    <div class="input-group has-feedback">
+                                        <span class="input-group-addon" id="sizing-addon6">Gentag Password</span>
+                                        <input type="password" class="form-control" name="password2" id="password2" aria-describedby="sizing-addon6" required>
+                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                        <span class="errMsg alert-warning"><?=@$errPassword2?></span>
+                                    </div><br>
                                     
                                     <button type="submit" class="btn btn-lg btn-success">Tilføj</button>
                                </form>

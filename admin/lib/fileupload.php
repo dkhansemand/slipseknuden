@@ -15,10 +15,14 @@ if($_POST){
                     if($_POST['pictureAssign'] == 1){
                         $uploadDir = '../../assets/media/products/';
                         $picType = 'products';
-                        (int)$isProduct = 1;
+                    }elseif($_POST['pictureAssign'] == 2){
+                        $uploadDir = '../../assets/media/employees/';
+                        $picType = 'employees';
+                    }elseif($_POST['pictureAssign'] == 3){
+                        $uploadDir = '../../assets/media/pages/';
+                        $picType = 'pages';
                     }else{
                         $uploadDir = '../../assets/media/';
-                        (int)$isProduct = 0;
                     }
                     
                     $conn = new dbconnector();

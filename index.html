@@ -11,17 +11,13 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="./assets/css/bootstrap.min.css" >
     <link rel="stylesheet" href="./assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
     <script src="./assets/js/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="./assets/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
     <script src="./assets/js/appController.js"></script>
-    <style>
-    .fullwidth{
-      width: 100%;
-    }
-      </style>
   </head>
 
   <body ng-app="slipseknuden">
@@ -72,11 +68,11 @@
 <div class="row">
   <div class="col-lg-3 col-md-4">
     <div class="row">
-      <div class="col-lg-8 col-md-8 col-lg-offset-1 col-md-offset-1">
+      <div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1">
         <h3>Produkter</h3>
         <nav class="navbar navbar-inverse navbar-left fullwidth" role="navigation" ng-controller="categoryController">
-            <ul class="nav nav-pills nav-stacked" ng-repeat="category in categories">
-              <li><a href="#Produkter/{{category.categoryId}}" class="col-lg-offset-1 col-md-offset-1">{{category.categoryName}}</a></li>
+            <ul class="nav nav-stacked" ng-repeat="category in categories">
+              <li class="sideMenu"><a href="#Produkter/{{category.categoryId}}" class="">{{category.categoryName}}</a></li>
             </ul>
         </nav>
       </div>

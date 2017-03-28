@@ -4,13 +4,13 @@
 
     ## Open connection to Database
     $conn = new dbconnector();
-$scanned_directory = array_diff(scandir('../../assets/media/products'), array('..', '.'));
+$scanned_directory = array_diff(scandir('../../assets/media/employees'), array('..', '.'));
 echo '<pre>';
 
 print_r($scanned_directory);
 
 /*foreach($scanned_directory as $picture){
-    $query = $conn->newQuery("INSERT INTO pictures (pictureFilename, pictureTitle, pictureTypeId)VALUES(:FILE, :TITLE, 1)");
+    $query = $conn->newQuery("INSERT INTO pictures (pictureFilename, pictureTitle, pictureTypeId)VALUES(:FILE, :TITLE, 2)");
     $query->bindParam(':FILE', $picture, PDO::PARAM_STR);
     $query->bindParam(':TITLE', $picture, PDO::PARAM_STR);
     if($query->execute()){
