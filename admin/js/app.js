@@ -7,9 +7,9 @@ $(document).ready( () => {
         var modal = $(this);
         modal.find('#productName').text(productName);
     });
-        $('#btnDeleteProd').on('click', ()=>{
-            window.location = './index.php?p=Products&option=Delete&id='+pid;
-        });
+    $('#btnDeleteProd').on('click', ()=>{
+        window.location = './index.php?p=Products&option=Delete&id='+pid;
+    });
 
         $('#modalDeletePic').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); 

@@ -181,7 +181,7 @@
         }
 
 
-        if($getParamOpt === 'Delete' && !empty($_GET['id'])){
+        if($getParamOpt === 'Delete' && !empty($_GET['id']) && (int)$_SESSION['userRole'] <= 1){
             $userId = (int)$_GET['id'];
 
             $getPicture = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTypeFolderPath FROM users
@@ -192,8 +192,7 @@
             if($getPicture->execute()){
                 $filename = $getPicture->fetch(PDO::FETCH_ASSOC);
                 $pictureId = $filename['pictureId'];
-                    $pictureDir = '../assets/media/'. $filename['pictureTypeFolderPath'] . '/';
-                
+                $pictureDir = '../assets/media/'. $filename['pictureTypeFolderPath'] . '/';
             } 
             
             $queryDelete = $conn->newQuery("DELETE FROM users WHERE userId = :ID; DELETE FROM pictures WHERE pictureId = :PICID");
@@ -251,6 +250,8 @@
             <?php
             }
             }
+        }else{
+            header('Location: ./index.php?p=Users');
         }
 
     }
