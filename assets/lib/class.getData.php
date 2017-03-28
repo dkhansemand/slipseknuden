@@ -4,7 +4,7 @@
 
         public function categories(){
             try{
-                $conn = $this->newQuery("SELECT categoryId, categoryName FROM categories WHERE categoryIsActive = 1 ORDER BY categoryPosition ASC");
+                $conn = $this->newQuery("SELECT categoryId, categoryName FROM categories WHERE categoryActive = 1 ORDER BY categoryPosition ASC");
                 if($conn->execute()){
                     $returnData = $conn->fetchAll(PDO::FETCH_ASSOC);
                 }else{

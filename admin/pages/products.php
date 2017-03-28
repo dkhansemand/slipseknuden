@@ -6,7 +6,7 @@
             $infoArr = array();
 
             ## Select nessecary information to form from DB
-            $queryCat = $conn->newQuery("SELECT categoryId, categoryName FROM categories;");
+            $queryCat = $conn->newQuery("SELECT categoryId, categoryName FROM categories ORDER BY categoryPosition ASC;");
             $queryPic = $conn->newQuery("SELECT pictureid, picturefilename, pictureTypeFolderPath FROM pictures
             INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId;");    
             
