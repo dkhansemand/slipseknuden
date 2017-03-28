@@ -2,11 +2,8 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- jQuery -->
-    <!--<script src="<?=BASE?>/js/jquery.js"></script>
--->
     <!-- Bootstrap Core JavaScript -->
-    <script src="<?=BASE?>/js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
 
 </body>
 

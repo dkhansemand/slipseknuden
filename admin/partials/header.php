@@ -1,17 +1,4 @@
 <?php
-    $root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-    $devfolder = '/hifi';
-    $file_headers = @get_headers($root.$devfolder);
-    $username = 'Administrator';
-
-    if($file_headers[0] === "HTTP/1.1 404 Not Found"){
-        define('BASE', $root.'/admin_hifi');
-        define('IMGBASE', $root);
-    }else{
-        define('BASE', $root.$devfolder.'/admin_hifi');
-        define('IMGBASE', $root.$devfolder);
-    }
-
     ## Import dbconnetor class
     require_once '../assets/lib/class.mysql.php';
     ## Create global connection variable
@@ -32,13 +19,13 @@
     <title>Slipseknuden - Kontrolpanel</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="<?=BASE?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="<?=BASE?>/css/sb-admin.css" rel="stylesheet">
+    <link href="./css/sb-admin.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="<?=BASE?>/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="./font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -85,7 +72,7 @@
                                 <a href="./index.php?p=Dashboard"><i class="fa fa-fw fa-dashboard"></i> Kontrolpanel</a>
                             </li>
                             <li>
-                                <a href="./index.php?p=Users"><i class="fa fa-fw fa-user"></i> Brugere</a>
+                                <a href="./index.php?p=Users"><i class="fa fa-fw fa-user"></i> Medarbejdere</a>
                             </li>
                             <li>
                                 <a href="./index.php?p=Settings"><i class="fa fa-fw fa-wrench"></i> Shop indstillinger</a>

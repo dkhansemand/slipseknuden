@@ -6,9 +6,10 @@
         if(!empty($_POST['username']) && !empty($_POST['password'])){
             ## Import dbconnetor class
             require_once '../assets/lib/class.mysql.php';
-            
+            require_once '../assets/lib/class.log.php';
             ## Create global connection variable
             $conn = new dbconnector();
+            $log = new log();
 
             $username = $_POST['username'];
             $password = $_POST['password'];
@@ -24,7 +25,13 @@
                     $_SESSION['username'] = $result['username'];
                     $_SESSION['userRole'] = $result['userRole'];
                     $_SESSION['isLoggedIn'] = true;
-                    unset($conn);
+
+                    $logUser['logCode'] = 1;
+                    $logUser['logMsg'] = 'Bruger session start (' . $result['username'] . ')';
+                    $logUser['logId'] = $result['userId'];
+                    $log->logUser($logUser);
+
+                    unset($conn, $log);
                     header('Location: ./index.php?p=Dashboard');
                     exit;
                 }else{

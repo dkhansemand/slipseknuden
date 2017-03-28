@@ -252,11 +252,11 @@ $(document).ready( () => {
                         </div>
                         <div class="panel-body">
                            <form action="./index.php?p=Categories&option=Add" method="post" id="categoryForm">
-                               <div class="input-group has-feedback">
-                                <span class="input-group-addon" id="sizing-addon2">Kategori navn</span>
-                                <input type="text" class="form-control" placeholder="Kategori navn" name="categoryName" id="categoryName" value="<?=@$categoryName?>" aria-describedby="sizing-addon2" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <span class="errMsg alert-warning"><?=@$errCategoryName?></span>
+                            <div class="input-group has-feedback">
+                            <span class="input-group-addon" id="sizing-addon2">Kategori navn</span>
+                            <input type="text" class="form-control" placeholder="Kategori navn" name="categoryName" id="categoryName" value="<?=@$categoryName?>" aria-describedby="sizing-addon2" required>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <span class="errMsg alert-warning"><?=@$errCategoryName?></span>
                             </div><br>
                             <div class="input-group">
                                 <span class="input-group-addon" id="sizing-addon3">Position</span>
