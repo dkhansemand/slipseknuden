@@ -110,7 +110,7 @@
                                 <i class="fa fa-dashboard"></i>  <a href="./index.php?p=Dashboard">Kontrolpanel</a>
                             </li>
                              <li class="<?=@empty($getParamOpt) ? '' : 'active'?>">
-                                <i class="fa fa-newspaper-o"></i>  <a href="./index.php?p=Settings">Indstillingerr</a>
+                                <i class="fa fa-newspaper-o"></i>  <a href="./index.php?p=Settings">Indstillinger</a>
                             </li>
                             
                         </ol>

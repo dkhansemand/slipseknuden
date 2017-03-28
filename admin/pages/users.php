@@ -82,7 +82,8 @@
                         $successErr = false;
                         $successTitle = 'Medarbejder tilføjet!';
                         $successMsg = 'Medarbejder er nu tilføjet!';
-                        unset($errCount, $username, $firstname, $lastname, $email, $passwordOne, $passwordTwo);   
+                        unset($errCount, $username, $firstname, $lastname, $email, $passwordOne, $passwordTwo);
+                        header('Location: ./index.php?p=Users');   
                     }                
                 }else{
                     $success = true;
@@ -181,7 +182,7 @@
         }
 
 
-        if($getParamOpt === 'Delete' && !empty($_GET['id']) && (int)$_SESSION['userRole'] <= 1){
+        if($getParamOpt === 'Delete' && !empty($_GET['id']) ){
             $userId = (int)$_GET['id'];
 
             $getPicture = $conn->newQuery("SELECT pictureId, pictureFilename, pictureTypeFolderPath FROM users
@@ -248,12 +249,13 @@
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
             <?php
-            }
-            }
-        }else{
-            header('Location: ./index.php?p=Users');
-        }
+            
+            
+        
 
+            }
+            }
+        }
     }
 
     unset($conn);
@@ -493,7 +495,7 @@
         }
         
         if(@$getParamOpt === 'Edit'){
-            if((int)$_SESSION['userRole'] <= 0){
+            if((int)$_SESSION['userRole'] <= 1){
         ?>
         <div class="row">
             <div class="col-lg-8">
