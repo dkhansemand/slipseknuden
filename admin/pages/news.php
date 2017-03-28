@@ -6,17 +6,17 @@
             $getParamOpt = $_GET['option'];
             if($getParamOpt === 'Add' || $getParamOpt === 'Edit'){
                 
-                ## Retrive data for pictures
-                $queryPic = $conn->newQuery("SELECT pictureid, picturefilename, pictureTitle FROM hifi_pictures WHERE pictureIsProduct = 0;");    
+                ## Retrive data for pictures (NOT enabled)
+                /*$queryPic = $conn->newQuery("SELECT pictureid, picturefilename, pictureTitle FROM pictures WHERE pictureTypeId = 4;");    
                 
                 if($queryPic->execute()){
                     $infoArr['Pic'] = $queryPic->fetchAll(PDO::FETCH_ASSOC);
-                }
+                }*/
             }
 
              if($getParamOpt === 'Edit' && !empty($_GET['id'])){
                 $nid = (int)$_GET['id'];
-                $queryNews = $conn->newQuery("SELECT nid, newsTitle, newsContent, newsPictureId FROM hifi_news WHERE nid = :ID");
+                $queryNews = $conn->newQuery("SELECT newsId, newsTitle, newsContent FROM news WHERE newsId = :ID");
                 $queryNews->bindParam(':ID', $nid, PDO::PARAM_INT);
                 if($queryNews->execute()){
                     $newsEdit = $queryNews->fetch(PDO::FETCH_ASSOC);
@@ -30,7 +30,7 @@
             $nid = (int)$_GET['id'];
             
             
-            $queryDelete = $conn->newQuery("DELETE FROM hifi_news WHERE nid = :ID;");
+            $queryDelete = $conn->newQuery("DELETE FROM news WHERE newsid = :ID;");
             $queryDelete->bindParam(':ID', $nid, PDO::PARAM_INT);
 
             if($queryDelete->execute()){
@@ -81,10 +81,10 @@
                 }
 
                 if($errCount === 0){
-                    $queryInsert = $conn->newQuery("INSERT INTO hifi_news (newsTitle, newsContent, newsPictureId)VALUES(:TITLE, :CONTENT, :PICTUREID)");
+                    $queryInsert = $conn->newQuery("INSERT INTO news (newsTitle, newsContent)VALUES(:TITLE, :CONTENT)");
                     $queryInsert->bindParam(':TITLE', $newstitle, PDO::PARAM_STR);   
                     $queryInsert->bindParam(':CONTENT', $newscontent, PDO::PARAM_STR);      
-                    $queryInsert->bindParam(':PICTUREID', $_POST['newsPicture'], PDO::PARAM_INT);       
+                    //$queryInsert->bindParam(':PICTUREID', $_POST['newsPicture'], PDO::PARAM_INT);       
                     
                     if($queryInsert->execute()){
                         $success = true;
@@ -126,10 +126,10 @@
                 }
 
                 if($errCount === 0){
-                    $queryUpdate = $conn->newQuery("UPDATE hifi_news SET newsTItle = :TITLE, newsContent = :CONTENT, newsPictureId = :PICTUREID WHERE nid = :NID");
+                    $queryUpdate = $conn->newQuery("UPDATE news SET newsTItle = :TITLE, newsContent = :CONTENT WHERE newsid = :NID");
                     $queryUpdate->bindParam(':TITLE', $newstitle, PDO::PARAM_STR);   
                     $queryUpdate->bindParam(':CONTENT', $newscontent, PDO::PARAM_STR);      
-                    $queryUpdate->bindParam(':PICTUREID', $_POST['newsPicture'], PDO::PARAM_INT);       
+                   // $queryUpdate->bindParam(':PICTUREID', $_POST['newsPicture'], PDO::PARAM_INT);       
                     $queryUpdate->bindParam(':NID', $nid, PDO::PARAM_INT);
                     if($queryUpdate->execute()){
                         $success = true;
@@ -241,7 +241,7 @@
                         </div>
                         <div class="panel-body">
                           <pre>
-                            <?=print_r($_GET)?><br> Defined base : <?=BASE?><br>
+                            
                             <?=print_r($_POST, true)?>
                             <?=print_r(@$newsEdit, true)?>
                           </pre>
@@ -269,31 +269,22 @@
                 <h3>Nyheder</h3>
                 <?php
                     ## Query to select 4 of the latest news
-                    $queryNews = $conn->newQuery("SELECT nid, newsTitle, newsContent, DATE_FORMAT(newsAdded, '%d/%m %Y %h:%i') AS newsDate, pictureFilename, pictureTitle
-                                                        FROM hifi_news 
-                                                        LEFT JOIN hifi_pictures ON pictureFilename = newsPictureId
+                    $queryNews = $conn->newQuery("SELECT newsId, newsTitle, newsContent, DATE_FORMAT(newsDateCreated, '%d/%m %Y %H:%i') AS newsDate
+                                                        FROM news 
                                                         ORDER BY newsDate DESC;");
                     if($queryNews->execute()){
                         while($news = $queryNews->fetch(PDO::FETCH_ASSOC)){
-
-                            ## CHeck if there is a picture related, if not insert a placeholder
-                            if(!empty($news['pictureFlename'])){
-                                $image = $news['pictureFilename'];
-                            }else{
-                                $image = 'http://placehold.it/500x300';
-                            }
                     ?>
                     <div class="col-xs-18 col-sm-6 col-md-3">
                         <div class="thumbnail">
-                            <img src="<?=$image?>" alt="<?=$news['pictureTitle']?>">
                             <div class="caption">
                                 <h4><?=$news['newsTitle']?></h4>
                                 <p class="text-muted"><?=$news['newsDate']?></p>
                             
                             <p><?=$news['newsContent'];?></p>
                             <p>
-                            <a href="./index.php?p=News&option=Edit&id=<?=$news['nid']?>" class="btn btn-info" role="button"><i class="fa fa-pencil"></i></a>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteNews" data-newsHeading="<?=$news['newsTitle']?>" data-nid="<?=$news['nid']?>"><i class="fa fa-remove"></i></button>
+                            <a href="./index.php?p=News&option=Edit&id=<?=$news['newsId']?>" class="btn btn-info" role="button"><i class="fa fa-pencil"></i></a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteNews" data-newsHeading="<?=$news['newsTitle']?>" data-nid="<?=$news['newsId']?>"><i class="fa fa-remove"></i></button>
                             </p>
                         </div>
                     </div>
@@ -356,45 +347,17 @@
     
                             <div class="input-group col-lg-6 has-feedback">
                                 <span class="input-group-addon" id="sizing-addon2">Overskrift</span>
-                                <input type="text" class="form-control" placeholder="Overskrift" name="newstitle" id="newsTitle" value="<?=@$newstitle?>" aria-describedby="sizing-addon2" required>
+                                <input type="text" class="form-control" placeholder="Overskrift" name="newstitle" id="newsTitle" value="<?=@$newstitle?><?=@$newsEdit['newsTitle']?>" aria-describedby="sizing-addon2" required>
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                 <span class="errMsg alert-warning"><?=@$errNewstitle?></span>
                             </div><br>
                             <div class="input-group has-feedback">
                                 <label for="">Indhold</label>
-                                <textarea name="newscontent" id="newscontent" class="form-control" col="15" rows="10" required><?=@$newscontent?></textarea>
+                                <textarea name="newscontent" id="newscontent" class="form-control" col="15" rows="10" required><?=@$newscontent?><?=@$newsEdit['newsContent']?></textarea>
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                 <span class="errMsg alert-warning"><?=@$errNewscontent?></span>
                             </div><br> 
-                            <div class="input-group">
-                                <label for="basic-url">Nyheds billede</label>
-                                <select id="newsPic" name="newsPicture">
-                                        <?php
-                                        foreach($infoArr['Pic'] as $Picture){
-                                    ?>
-                                        <option value="<?=$Picture['pictureid']?>" <?=@$newsEdit['newsPictureId'] === $Picture['pictureid'] ? 'selected' : ''?>><?=utf8_encode($Picture['picturefilename'])?></option>
-
-                                        <?php
-                                        }
-                                        ?>
-                                </select>
-                               
-                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAddPicture"><i class="fa fa-plus"></i> Tilføj billede </button>
-                                <br>
-                                <script>
-                                    $(document).ready(()=>{
-                                        var picture = $('#newsPic option:selected').text();
-                                        $("#showPic").attr("src","<?=IMGBASE?>/img/" + picture);
-                                        $('#newsPic').on('change', function() {
-                                            var picture = $('#newsPic option:selected').text();
-                                            $("#showPic").attr("src","<?=IMGBASE?>/img/" + picture);
-                                        });
-                                    });
-                                    </script>
-                                <img id="showPic" height="250" width="300" src="">
-                                <span id="showPic"></span>
-                            </div>
-
+                            
                             <button type="submit" name="btnAdd" class="btn btn-lg btn-success"><?=$btn?> </button>
                         </form>
                          <div class="modal fade" id="modalAddPicture" tabindex="-1" role="dialog" aria-labelledby="ModalAddPicture">
