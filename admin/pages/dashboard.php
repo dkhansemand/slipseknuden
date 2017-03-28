@@ -57,7 +57,6 @@
                             </div>
                         </div>
                         <div class="panel-body">
-                           <a href="./index.php?p=Pictures" class="btn btn-success">Billede</a>
                            <a href="./index.php?p=Users" class="btn btn-success">Medarbejder</a>
                            <a href="./index.php?p=Categories" class="btn btn-success">Kategori</a>
                           <a href="./index.php?p=Products&option=Add" class="btn btn-success">Produkt</a>

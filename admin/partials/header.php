@@ -83,13 +83,7 @@
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#indhold"><i class="fa fa-fw fa-arrows-v"></i> Indhold <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="indhold" class="collapse">
-                            <li>
-                                <a href="./index.php?p=Messages"><i class="fa fa-fw fa-envelope"></i> Beskeder</a>
-                            </li>
-                            <li>
-                                <a href="./index.php?p=Pictures"><i class="fa fa-fw fa-picture-o"></i> Billeder</a>
-                            </li>
-                            
+                                                       
                             <li>
                                 <a href="./index.php?p=PageTexts"><i class="fa fa-fw fa-home"></i> Side Tekster</a>
                             </li>
