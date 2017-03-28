@@ -11,6 +11,76 @@
      if($queryPic->execute()){
         $infoArr['Pic'] = $queryPic->fetchAll(PDO::FETCH_ASSOC);  
     }
+    if(isset($_GET['option'])){
+        $getParamOpt = $_GET['option'];
+
+        if(!empty($_POST) && $getParamOpt === 'Add'){
+            if(!empty($_POST['username']) && 
+                !empty($_POST['firstname']) && 
+                !empty($_POST['lastname']) &&
+                !empty($_POST['email']) &&
+                !empty($_POST['password'])){
+                
+                $errCount = 0;
+                $username = $_POST['username'];
+                $firstname = $_POST['firstname'];
+                $lastname = $_POST['lastname'];
+                $email = $_POST['email'];
+                $title = $_POST['userTitle'];
+                $userPicture = $_POST['userPicture'];
+                $passwordOne = $_POST['password'];
+                $passwordTwo = $_POST['password2'];
+
+                if(!preg_match('/\w+$/', $username)){
+                    ++$errCount;
+                    $errUsername = 'Feltet må kun indholde bogstaver.';
+                }
+                if(!preg_match('/^[a-zA-ZÆØÅæøå\s-]+$/', $firstname)){
+                    ++$errCount;
+                    $errFirstname = 'Feltet må kun indholde bogstaver og - .';
+                }
+                if(!preg_match('/^[a-zA-ZÆØÅæøå\s-]+$/', $lastname)){
+                    ++$errCount;
+                    $errLastname = 'Feltet må kun indholde bogstaver og - .';
+                }
+                if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+                    ++$errCount;
+                    $errEmail = 'Emailen er ikke skrevet korrekt.';
+                }
+                if($passwordOne !== $passwordTwo){
+                    ++$errCount;
+                    $errPassword2 = 'Passwords stemmer ikke overens';
+                }
+
+                if($errCount === 0){
+                    $options  = array('cost' => 10);
+                    $hash     = password_hash($passwordOne, PASSWORD_BCRYPT, $options);
+
+                    $query = $conn->newQuery("INSERT INTO users (userName, userPassword, userEmail, userFirstname, userLastname, userPictureId, userRole) 
+                                                VALUES (:username, '$hash', :email, :firstname, :lastname, :PICID, :ROLE)");
+                    $query->bindParam(':username', $username, PDO::PARAM_STR);
+                    $query->bindParam(':email', $email, PDO::PARAM_STR);
+                    $query->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+                    $query->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+                    $query->bindParam(':PICID', $userPicture, PDO::PARAM_INT);
+                    $query->bindParam(':ROLE', $title, PDO::PARAM_INT);
+
+                    if($query->execute()){
+                        $success = true;
+                        $successErr = false;
+                        $successTitle = 'Medarbejder tilføjet!';
+                        $successMsg = 'Medarbejder er nu tilføjet!';
+                        unset($errCount, $username, $firstname, $lastname, $email, $passwordOne, $passwordTwo);   
+                    }                
+                }else{
+                    $success = true;
+                    $successErr = true;
+                    $successTitle = 'Fejl i indtastning!';
+                    $successMsg = 'Alle felter skal udfyldes og være i korrekt format.';
+                }
+            }
+        }
+    }
 
     ##Quick script to add user - for the tests - ONLY for DEV
    /* require_once '../../assets/lib/class.mysql.php';
@@ -80,7 +150,7 @@
         </div>
 
 
-        <div class="row hidden">
+        <div class="row">
             <div class="col-lg-10">
             <div class="panel panel-red">
                 <div class="panel-heading">
@@ -96,7 +166,7 @@
                     <pre>
                     <?=print_r($_GET)?>
                     
-                    <?php print_r($_SESSION)?>
+                    <?php print_r($_POST)?>
                     </pre>
                 </div>
             </div>
@@ -111,7 +181,7 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-8">
-                                <i class="fa fa-tasks fa-2x"></i>
+                                <i class="fa fa-user fa-2x"></i>
                                     - Tilføj medarbejder
                             </div>
                         </div>
@@ -123,7 +193,7 @@
                         <div class="collapse" id="collapseUser">
                             <div class="well">
                             <h2>Indtast information</h2>
-                               <form action="./index.php?p=Users&option=Add" method="post" id="userForm">
+                               <form action="./index.php?p=Users&option=Add" method="post" id="userAddForm">
                                     <div class="input-group has-feedback">
                                         <span class="input-group-addon" id="sizing-addon1">Brugernavn</span>
                                         <input type="text" class="form-control" placeholder="brugernavn" name="username" id="username" value="<?=@$username?>" aria-describedby="sizing-addon1" required>
@@ -144,7 +214,7 @@
                                     </div><br>
                                     <div class="input-group has-feedback">
                                         <span class="input-group-addon" id="sizing-addon4">E-mail</span>
-                                        <input type="text" class="form-control" placeholder="E-mail" name="email" id="email" value="<?=@$email?>" aria-describedby="sizing-addon4" required>
+                                        <input type="email" class="form-control" placeholder="E-mail" name="email" id="email" value="<?=@$email?>" aria-describedby="sizing-addon4" required>
                                         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                         <span class="errMsg alert-warning"><?=@$errEmail?></span>
                                     </div><br>
