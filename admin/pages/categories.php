@@ -113,7 +113,7 @@
          }
     
 
-    $queryGetCat = $conn->newQuery("SELECT categoryId, categoryName, categoryActive, categoryPosition FROM categories ORDER BY categoryName ASC");
+    $queryGetCat = $conn->newQuery("SELECT categoryId, categoryName, categoryActive, categoryPosition FROM categories ORDER BY categoryPosition ASC");
     $queryGetCat->execute();
     $categories = $queryGetCat->fetchAll(PDO::FETCH_ASSOC);
 ?>
