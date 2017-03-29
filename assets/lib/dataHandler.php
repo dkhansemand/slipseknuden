@@ -17,6 +17,12 @@ ini_set('html_errors', false);
             unset($getCategories);
         }
 
+        if(isset($_GET['shopInfo'])){
+            $getDataShopInfo = new getData();
+            print_r($getDataShopInfo->shopInfo());
+            unset($getDataShopInfo);
+        }
+
     }
 
     ##POST handlers to insert data from Admin panel

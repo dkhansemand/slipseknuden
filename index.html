@@ -89,20 +89,24 @@
     </main>
 
   </div>
-
+<hr>
       <footer ng-controller="footerControl">
           <div class="container">
             <div class="row">
-              <div class="col-md-1">Slipseknuden</div>
-              <div class="col-md-1">Vejnavn</div>
-              <div class="col-md-1">postnr</div>
-              <div class="col-md-1">by</div>
-              <div class="col-md-1">email</div>
-              <div class="col-md-1">web addr.</div>
-              <div class="col-md-1">tlf nr</div>
+              <div class="col-md-1"><a href="./admin/">Admin</a></div>
+              <div class="col-md-1 col-lg-offset-2">{{shopTitle}}</div>
+              <div class="col-md-2">{{shopAddress}}</div>
+              <div class="col-md-1">{{shopZipcode}}</div>
+              <div class="col-md-1">{{shopCity}}</div>
+              <div class="col-md-1">{{shopEmail}}</div>
+              <div class="col-md-1">{{shopBase}}</div>
+              <div class="col-md-1">{{shopTelephone}}</div>
             </div>
           </div>
       </footer>
+      <div class="row">
+        &nbsp;
+      </div>
     </div> 
   </div>
   </body>

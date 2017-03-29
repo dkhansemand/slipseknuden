@@ -120,6 +120,25 @@ app.controller('searchViewControl', function ($scope) {
     
 });
 
-app.controller('footerControl', function ($scope) {
+app.controller('footerControl', function ($scope, $http) {
+    $http.get("./assets/lib/dataHandler.php?shopInfo")
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.shopTitle = response.data.shopTitle;
+            $scope.shopAddress = response.data.shopAddress;
+            $scope.shopZipcode = response.data.shopZipcode;
+            $scope.shopCity = response.data.shopCity;
+            $scope.shopEmail = response.data.shopEmail;
+            $scope.shopBae = response.data.shopBase;
+            $scope.shopTelephone = response.data.shopTelephone;    
+            //console.log(response);    
+        }else{
+            console.log('Fejl: ', response.data.error);
+        }
+    });
+});
+
+app.controller('randomProductControl', function ($scope, $http) {
     
 });
