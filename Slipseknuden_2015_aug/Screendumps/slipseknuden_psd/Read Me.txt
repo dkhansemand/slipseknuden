@@ -1,3 +1,0 @@
-Når du åbner logo.psd, kan det godt være, at Photoshop brokker sig over manglende fonts.
-Du får muligheden for at erstatte fonten med én, som er installeret på din computeren.
-Hvis dette ikke virker korrekt, så klip logo'et ud fra et af JPG billederne, som ligger i "slipseknuden_billeder" mappen.
