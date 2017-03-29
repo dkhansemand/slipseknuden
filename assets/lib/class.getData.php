@@ -114,7 +114,7 @@
                                                 INNER JOIN categories ON productCategoryId = categoryId
                                                 INNER JOIN pictures ON productPictureId = pictureId
                                                 INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
-                                                LIKE productName = :VALUE");
+                                                WHERE productName LIKE :VALUE");
                 $querySearch->bindParam(':VALUE', $searchStr, PDO::PARAM_STR);
                 if($querySearch->execute()){
                     $returnData = $querySearch->fetchAll(PDO::FETCH_ASSOC);
