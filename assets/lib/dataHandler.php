@@ -35,6 +35,34 @@ ini_set('html_errors', false);
             unset($getDataLatestNews);
         }
 
+        if(isset($_GET['employees'])){
+            $getDataEmployees = new getData();
+            print_r($getDataEmployees->getEmployees());
+            unset($getDataEmployees);
+        }
+
+        if(isset($_GET['products'])){
+            $id = (int)$_GET['categoryId'];
+            $getDataProducts = new getData();
+            print_r($getDataProducts->products($id));
+            unset($getDataProducts);
+        }
+
+        if(isset($_GET['product'])){
+            $id = (int)$_GET['id'];
+            $getDataProduct = new getData();
+            print_r($getDataProduct->product($id));
+            unset($getDataProduct);
+        }
+
+        if(isset($_GET['search'])){
+            $value = $_GET['value'];
+            $getDataSearch = new getData();
+            print_r($getDataSearch->search($value));
+            unset($getDataSearch);
+        }
+
+
     }
 
     ##POST handlers to insert data from Admin panel

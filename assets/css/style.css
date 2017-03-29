@@ -32,3 +32,8 @@
 .info-btn:hover{
     color: #fff;
 }
+
+#btnSearch{
+    background-color: transparent;
+    border: 0;
+}

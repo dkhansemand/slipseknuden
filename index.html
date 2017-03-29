@@ -44,12 +44,12 @@
               <li ng-class="{active:isActive('/Garanti')}"><a href="#Garanti"> Garanti</a></li>
               <li ng-class="{active:isActive('/Kontakt')}"><a href="#Kontakt">Kontakt</a></li>
               <li ng-class="{active:isActive('/Nyheder')}"><a href="#Nyheder">Nyheder</a></li>
-              <li ng-class="{active:isActive('/Produkter')}"><a href="#Produkter">Produkter</a></li>
-              <form class="navbar-form navbar-right" role="search">
+              <li ng-class="{active:isActive('/Produkter')}"><a href="#Produkter/0">Produkter</a></li>
+              <form class="navbar-form navbar-right" role="search" id="searchForm">
                 <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search">
+                  <input type="text" id="search" class="form-control" placeholder="Search">
                 </div>
-                <a href="#Search"><i class="fa fa-search fa-2x"></i></a>
+                <button type="submit" id="btnSearch"><i class="fa fa-search fa-2x"></i></button>
                 <a href="#"><i class="fa fa-facebook fa-2x"></i></a>
                 <a href="#"><i class="fa fa-twitter fa-2x"></i></a>
               </form>
@@ -98,10 +98,10 @@
                 <div class="col-sm-6">
                    <p>{{product.categoryName}}</p>
                   <p>{{product.productDescription}}</p>
-                  <p>DKK {{product.productPrice}},-</p>
+                  <p><strong>DKK {{product.productPrice}},-</strong></p>
                 </div>
                 
-                  <a href="#Produkt/{{product.prouctId}}" class="info-btn col-sm-offset-3">Info</a>
+                  <a href="#Produkt/{{product.productId}}" class="info-btn col-sm-offset-3">Info</a>
                  
                   <br><br>
             </div>

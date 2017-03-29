@@ -1,1 +1,13 @@
-<h1>Søge resultater:</h1>
+<h1>Søge resultater for <em>{{searchVal}}</em>:</h1>
+
+<div ng-repeat="product in products">
+        <div class="col-lg-4">
+            <div class="row">
+                <img class="col-lg-8 pull-left" src="./assets/media/{{product.pictureTypeFolderPath}}/{{product.pictureFilename}}" height="125" width="125">
+            </div>
+            <h4>{{product.categoryName}}</h4>
+            <p>{{product.productDescription}}</p>
+            <h4><strong> DKK {{product.productPrice}},-</strong></h4>
+            <a href="#Produkt/{{product.productId}}" class="info-btn">Info</a>
+        </div>
+    </div>

@@ -48,10 +48,18 @@ app.config(function($routeProvider) {
     });
 });
 
+
 app.controller('navController', function($scope, $location){
     $scope.isActive = function(route) {
         return route === $location.path();
     }
+    $('#searchForm').on('submit', (event) => {
+        event.preventDefault();
+        console.log(event);
+        var searchVal = $('#searchForm #search').val();
+        window.location = '#Soeg/'+searchVal;
+
+    });
 });
 
 app.controller('categoryController', function($scope, $http){
@@ -75,17 +83,50 @@ app.controller('homeControl', function ($scope, $http, $location) {
             $scope.pageTitle = response.data.pageDetailsTitle;    
             //console.log(response);    
         }else{
-            $scope.pageTitle = 'Fejl: ' + response.data.errMsg;
+            console.log('Fejl: ' + response.data.errMsg);
         }
     });
 });
 
-app.controller('aboutControl', function ($scope) {
+app.controller('aboutControl', function ($scope, $http, $location) {
+    "use strict";
     
+    $http.get("./assets/lib/dataHandler.php?page=" + $location.path().replace('/', ''))
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.pageContent = response.data.pageDetailsText;
+            $scope.pageTitle = response.data.pageDetailsTitle;    
+            //console.log(response);    
+        }else{
+            console.log('Fejl: ' + response.data.errMsg);
+        }
+    });
+
+    $http.get("./assets/lib/dataHandler.php?employees")
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.employees = response.data;
+            console.log(response);    
+        }else{
+            console.log('Fejl: ' + response.data.errMsg);
+        }
+    });
 });
 
-app.controller('guaranteeControl', function ($scope) {
-    
+app.controller('guaranteeControl', function ($scope, $http, $location, $sce) {
+    $http.get("./assets/lib/dataHandler.php?page=" + $location.path().replace('/', ''))
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.pageContent = $sce.trustAsHtml(response.data.pageDetailsText);
+            $scope.pageTitle = response.data.pageDetailsTitle;    
+            //console.log(response);    
+        }else{
+            console.log('Fejl: ' + response.data.errMsg);
+        }
+    });
 });
 
 app.controller('contactControl', function ($scope) {
@@ -106,19 +147,41 @@ app.controller('productControl', function ($scope, $routeParams, $http) {
     .then(function (response) {
         "use strict";
         if(!response.data.error){
-            console.log(response);    
+            $scope.products = response.data;
+            //console.log(response);    
         }else{
-            $scope.pageTitle = 'Fejl: ' + response.data.errMsg;
+            console.log('Fejl: ' + response.data.errMsg);
         }
     });
 });
 
-app.controller('productViewControl', function ($scope) {
-    
+app.controller('productViewControl', function ($scope, $http, $routeParams) {
+    var productID = $routeParams.ID;
+    $http.get("./assets/lib/dataHandler.php?product&id="+productID)
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.product = response.data;
+            console.log(response);    
+        }else{
+            console.log('Fejl: ' + response.data.errMsg);
+        }
+    });
 });
 
-app.controller('searchViewControl', function ($scope) {
-    
+app.controller('searchViewControl', function ($scope, $http, $routeParams) {
+    var searchVal = $routeParams.SEARCH;
+    $scope.searchVal = searchVal;
+     $http.get("./assets/lib/dataHandler.php?search&value="+searchVal)
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.products = response.data;
+            console.log(response);    
+        }else{
+            console.log('Fejl: ' + response.data.errMsg);
+        }
+    });
 });
 
 app.controller('footerControl', function ($scope, $http) {

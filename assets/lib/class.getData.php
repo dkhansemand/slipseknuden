@@ -45,24 +45,85 @@
         }
 
         public function products($categoryId){
-            try{
-            if((int)$categoryId === 0){
-                $conn = $this->newQuery("SELECT ");
-            }else{
-                $conn = $this->newQuery("SELECT ");
-            }
 
-            if($conn->execute()){
-                $returnData = $conn->fetch(PDO::FETCH_ASSOC);
-            }else{
-                $returnData['error'] = true;
-                $returnData['errMsg'] = '[Home]SQL error.';
-            }
-            unset($conn);
-            return json_encode($returnData, JSON_FORCE_OBJECT);
+            try{
+                if($categoryId === 0){
+                    $queryProducts = $this->newQuery("SELECT productId, productName, productDescription, productPrice, categoryName, pictureTypeFolderPath, pictureFilename
+                                                FROM products
+                                                INNER JOIN categories ON productCategoryId = categoryId
+                                                INNER JOIN pictures ON productPictureId = pictureId
+                                                INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+                                                ORDER BY productName ASC");
+                }else{
+                    $queryProducts = $this->newQuery("SELECT productId, productName, productDescription, productPrice, categoryName, pictureTypeFolderPath, pictureFilename
+                                                FROM products
+                                                INNER JOIN categories ON productCategoryId = categoryId
+                                                INNER JOIN pictures ON productPictureId = pictureId
+                                                INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+                                                WHERE productCategoryId = :ID
+                                                ORDER BY productName ASC");
+                    $queryProducts->bindParam(':ID', $categoryId, PDO::PARAM_INT); 
+                }
+
+                if($queryProducts->execute()){
+                    $returnData = $queryProducts->fetchAll(PDO::FETCH_ASSOC);
+                }else{
+                    $returnData['error'] = true;
+                    $returnData['errMsg'] = '[Home]SQL error.';
+                }
+                unset($queryProducts);
+                return json_encode($returnData, JSON_FORCE_OBJECT);
             }catch(PDOException $err){
                 $returnData['error'] = true;
                 $returnData['errMsg'] = '[Home]Connection failed: ' . $err->getMessage();
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+            }
+        }
+
+        public function product($productId){
+
+            try{
+                $queryProduct = $this->newQuery("SELECT productId, productName, productDescription, productPrice, categoryName, pictureTypeFolderPath, pictureFilename
+                                                FROM products
+                                                INNER JOIN categories ON productCategoryId = categoryId
+                                                INNER JOIN pictures ON productPictureId = pictureId
+                                                INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+                                                WHERE productId = :ID");
+                $queryProduct->bindParam(':ID', $productId, PDO::PARAM_INT);
+                if($queryProduct->execute()){
+                    $returnData = $queryProduct->fetch(PDO::FETCH_ASSOC);
+                }else{
+                    $returnData['error'] = true;
+                    $returnData['errMsg'] = '[Product]SQL error.';
+                }
+                unset($queryProduct);
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+            
+            }catch(PDOException $err){
+                $returnData['error'] = true;
+                $returnData['errMsg'] = '[Product]Connection failed: ' . $err->getMessage();
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+            }
+        }
+
+        public function search($searchValue){
+            try{
+                $searchStr = '%' . $searchValue . '%';
+                $querySearch = $this->newQuery("SELECT productId, productName, productDescription, productPrice, categoryName, pictureTypeFolderPath, pictureFilename
+                                                FROM products
+                                                INNER JOIN categories ON productCategoryId = categoryId
+                                                INNER JOIN pictures ON productPictureId = pictureId
+                                                INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
+                                                LIKE productName = :VALUE");
+                $querySearch->bindParam(':VALUE', $searchStr, PDO::PARAM_STR);
+                if($querySearch->execute()){
+                    $returnData = $querySearch->fetchAll(PDO::FETCH_ASSOC);
+                }
+                unset($querySearch);
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+            }catch(PDOException $err){
+                $returnData['error'] = true;
+                $returnData['errMsg'] = '[Search]Connection failed: ' . $err->getMessage();
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }
         }
@@ -130,6 +191,31 @@
             }catch(PDOException $err){
                 $returnData['error'] = true;
                 $returnData['errMsg'] = '[NewsNewst]Connection failed: ' . $err->getMessage();
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+            }
+        }
+
+        public function getEmployees(){
+            try{
+                $queryEmployees = $this->newQuery("SELECT userEmail, userFirstname, userLastname, 
+                                            userRoleName, pictureFilename, pictureTypeFolderPath
+                                            FROM users
+                                            INNER JOIN userRoles ON roleId = userRole
+                                            INNER JOIN pictures ON userPictureId = pictureId
+                                            INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId AND pictureType.pictureTypeId = 2
+                                            ORDER BY roleId ASC;");
+                if($queryEmployees->execute()){
+                    $returnData = $queryEmployees->fetchAll(PDO::FETCH_ASSOC);
+                }else{
+                    $returnData['error'] = true;
+                    $returnData['errMsg'] = '[employees]SQL error.';
+                }   
+                unset($queryEmployees);
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+
+            }catch(PDOException $err){
+                $returnData['error'] = true;
+                $returnData['errMsg'] = '[Employees]Connection failed: ' . $err->getMessage();
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }
         }
