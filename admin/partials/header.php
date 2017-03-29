@@ -77,6 +77,9 @@
                             <li>
                                 <a href="./index.php?p=Settings"><i class="fa fa-fw fa-wrench"></i> Shop indstillinger</a>
                             </li>
+                            <li>
+                                <a href="./index.php?p=Log"><i class="fa fa-fw fa-terminal"></i> Log</a>
+                            </li>
                         </ul>
                     </li>
 

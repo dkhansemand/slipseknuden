@@ -1,7 +1,15 @@
 <?php
   $getNewMessages = $conn->newQuery("SELECT COUNT(contactIsRead) AS new FROM contactmessages");
-  $getNewMessages->execute();
-  $newMessages = $getNewMessages->fetch();
+  if($getNewMessages->execute()){
+    $newMessages = $getNewMessages->fetch();
+  }
+  $queryUserLog = $conn->newQuery("SELECT logId, logCode, logMessage, DATE_FORMAT(logDate, '%d/%m %Y %H:%i') AS dateLogged,  logIp, username, userFirstname, userLastname
+                                        From log
+                                        INNER JOIN users ON logUser = userId
+                                        ORDER BY dateLogged DESC LIMIT 0,10");
+    if($queryUserLog->execute()){
+        $logs = $queryUserLog->fetchAll(PDO::FETCH_ASSOC);
+    }
 ?>
 
 <div id="page-wrapper">
@@ -88,6 +96,39 @@
                             </a>
                         </div>
                     </div>
+</div>
+                     <div class="row">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Log - Bruger logins (seneste 10)</div>
+            <!-- Table -->
+            <table class="table table-responsive table-bordered table-hover table-stripped">
+                <thead>
+                    <th>Kode</th>
+                    <th>Besked</th>
+                    <th>Dato</th>
+                    <th>IP</th>
+                    <th>Bruger</th>
+                </thead>
+                <tbody>
+                    <?php
+                        foreach($logs as $log){
+                        ?>
+                        <tr>
+                            <td><?=$log['logCode']?></td>
+                            <td><?=$log['logMessage']?></td>
+                            <td><?=$log['dateLogged']?></td>
+                            <td><?=$log['logIp']?></td>
+                            <td><?=$log['userFirstname'] . ' ' . $log['userLastname'] . ' (' . $log['username'] . ')'?></td>
+                        </tr>
+                        <?php
+                        }
+                    ?>
+               </tbody>
+            </table>
+        </div>
+        </div>  
+</div>
             </div>
             <!-- /.container-fluid -->
 
