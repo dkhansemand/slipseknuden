@@ -5,10 +5,10 @@ ini_set('html_errors', false);
     ##GET handlers to return JSON data on request from front-end
     if(!empty($_GET)){
 
-        if(isset($_GET['home'])){
-            $getHome = new getData();
-            print_r($getHome->home());
-            unset($getHome);
+        if(isset($_GET['page'])){
+            $getPageText = new getData();
+            print_r($getPageText->pageTexts($_GET['page']));
+            unset($getPageText);
         }
 
         if(isset($_GET['categories'])){

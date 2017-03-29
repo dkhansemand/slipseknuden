@@ -22,23 +22,24 @@
             }
         }
 
-        public function home(){
+        public function pageTexts($page){
             try{
-                $conn = $this->newQuery("SELECT pageDetailsTitle, pageDetailsText from pages 
+                $queryPage = $this->newQuery("SELECT pageDetailsTitle, pageDetailsText from pages 
                 INNER JOIN pageDetails ON pageTxtId = pageDetailId
-                WHERE pageName = 'Hjem'");
-                if($conn->execute()){
-                    $returnData = $conn->fetch(PDO::FETCH_ASSOC);
+                WHERE pageName = :PAGE");
+                $queryPage->bindParam(':PAGE', $page, PDO::PARAM_STR);
+                if($queryPage->execute()){
+                    $returnData = $queryPage->fetch(PDO::FETCH_ASSOC);
                 }else{
                     $returnData['error'] = true;
-                    $returnData['errMsg'] = '[Home]SQL error.';
+                    $returnData['errMsg'] = '[Page]SQL error.';
                 }
                 
                 unset($conn);
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }catch(PDOException $err){
                 $returnData['error'] = true;
-                $returnData['errMsg'] = '[Home]Connection failed: ' . $err->getMessage();
+                $returnData['errMsg'] = '[Page]Connection failed: ' . $err->getMessage();
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }
         }

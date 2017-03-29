@@ -64,9 +64,10 @@ app.controller('categoryController', function($scope, $http){
     });
 });
 
-app.controller('homeControl', function ($scope, $http) {
+app.controller('homeControl', function ($scope, $http, $location) {
     "use strict";
-    $http.get("./assets/lib/dataHandler.php?home")
+    
+    $http.get("./assets/lib/dataHandler.php?page=" + $location.path().replace('/', ''))
     .then(function (response) {
         "use strict";
         if(!response.data.error){
@@ -163,7 +164,7 @@ app.controller('randomContentControl', function ($scope, $http, $location) {
                 "use strict";
                 if(!response.data.error){
                     $scope.news = response.data;
-                    console.log('news: ', response);    
+                    //console.log('news: ', response);    
                 }else{
                     console.log('Fejl: ', response.data.errMsg);
                 }
@@ -176,7 +177,7 @@ app.controller('randomContentControl', function ($scope, $http, $location) {
                 "use strict";
                 if(!response.data.error){
                     $scope.products = response.data;
-                    console.log('Products: ', response);    
+                    //console.log('Products: ', response);    
                 }else{
                     console.log('Fejl: ', response.data.errMsg);
                 }
