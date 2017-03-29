@@ -60,7 +60,7 @@ app.controller('categoryController', function($scope, $http){
     .then(function (response) {
         "use strict";
         $scope.categories = response.data;
-        console.log(response);    
+        //console.log(response);    
     });
 });
 
@@ -74,7 +74,7 @@ app.controller('homeControl', function ($scope, $http) {
             $scope.pageTitle = response.data.pageDetailsTitle;    
             //console.log(response);    
         }else{
-            $scope.pageTitle = 'Fejl: ' + response.data.error;
+            $scope.pageTitle = 'Fejl: ' + response.data.errMsg;
         }
     });
 });
@@ -99,7 +99,7 @@ app.controller('newsViewControl', function ($scope) {
     
 });
 
-app.controller('productControl', function ($scope, $routeParams) {
+app.controller('productControl', function ($scope, $routeParams, $http) {
     var categoryID = $routeParams.CATID;
     $http.get("./assets/lib/dataHandler.php?products&categoryId="+categoryID)
     .then(function (response) {
@@ -107,7 +107,7 @@ app.controller('productControl', function ($scope, $routeParams) {
         if(!response.data.error){
             console.log(response);    
         }else{
-            $scope.pageTitle = 'Fejl: ' + response.data.error;
+            $scope.pageTitle = 'Fejl: ' + response.data.errMsg;
         }
     });
 });
@@ -134,11 +134,53 @@ app.controller('footerControl', function ($scope, $http) {
             $scope.shopTelephone = response.data.shopTelephone;    
             //console.log(response);    
         }else{
-            console.log('Fejl: ', response.data.error);
+            console.log('Fejl: ', response.data.errMsg);
         }
     });
 });
 
 app.controller('randomProductControl', function ($scope, $http) {
-    
+    $http.get("./assets/lib/dataHandler.php?randomProducts")
+    .then(function (response) {
+        "use strict";
+        if(!response.data.error){
+            $scope.products = response.data;
+            //console.log(response);    
+        }else{
+            console.log('Fejl: ', response.data.errMsg);
+        }
+    });
+});
+
+
+app.controller('randomContentControl', function ($scope, $http, $location) {
+    $scope.$on('$routeChangeStart', function(next, current) { 
+        if($location.path() === '/Hjem'){
+            $scope.isProducts = false;
+            $scope.isNews = true;
+           $http.get("./assets/lib/dataHandler.php?latestNews")
+            .then(function (response) {
+                "use strict";
+                if(!response.data.error){
+                    $scope.news = response.data;
+                    console.log('news: ', response);    
+                }else{
+                    console.log('Fejl: ', response.data.errMsg);
+                }
+            });
+        }else{
+            $scope.isNews = false;
+            $scope.isProducts = true;
+            $http.get("./assets/lib/dataHandler.php?randomProducts")
+            .then(function (response) {
+                "use strict";
+                if(!response.data.error){
+                    $scope.products = response.data;
+                    console.log('Products: ', response);    
+                }else{
+                    console.log('Fejl: ', response.data.errMsg);
+                }
+            });
+        }
+     });
 });

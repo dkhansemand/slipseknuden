@@ -23,6 +23,18 @@ ini_set('html_errors', false);
             unset($getDataShopInfo);
         }
 
+        if(isset($_GET['randomProducts'])){
+            $getDataRandom = new getData();
+            print_r($getDataRandom->getRandomProducts());
+            unset($getDataRandom);
+        }
+
+        if(isset($_GET['latestNews'])){
+            $getDataLatestNews = new getData();
+            print_r($getDataLatestNews->latestNews());
+            unset($getDataLatestNews);
+        }
+
     }
 
     ##POST handlers to insert data from Admin panel

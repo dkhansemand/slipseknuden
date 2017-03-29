@@ -86,9 +86,10 @@
 
         public function getRandomProducts($limit = 2){
             try{
-                $queryRandom = $this->newQuery("SELECT productId, productName, productDescription, productPrice, pictureTypeFolderPath, pictureFilename
+                $queryRandom = $this->newQuery("SELECT productId, productName, productDescription, productPrice, categoryName, pictureTypeFolderPath, pictureFilename
                                                 FROM products
-                                                INNER JOIN pictures ON productPictureId = picootureId
+                                                INNER JOIN categories ON productCategoryId = categoryId
+                                                INNER JOIN pictures ON productPictureId = pictureId
                                                 INNER JOIN pictureType ON pictures.pictureTypeId = pictureType.pictureTypeId
                                                 ORDER BY RAND() LIMIT :NUM");
                 $queryRandom->bindParam(':NUM', $limit, PDO::PARAM_INT);
@@ -105,6 +106,29 @@
             }catch(PDOException $err){
                 $returnData['error'] = true;
                 $returnData['errMsg'] = '[RandomProducts]Connection failed: ' . $err->getMessage();
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+            }
+        }
+
+        public function latestNews($limit = 2){
+            try{
+                $queryNewsNewest = $this->newQuery("SELECT newsId, newsTitle, newsContent, DATE_FORMAT(newsDateCreated, '%d/%m %Y %H:%i') AS newsDate
+                                                        FROM news 
+                                                        ORDER BY newsDate DESC LIMIT :NUM;");
+                $queryNewsNewest->bindParam(':NUM', $limit, PDO::PARAM_INT);
+                if($queryNewsNewest->execute()){
+                    $returnData = $queryNewsNewest->fetchAll(PDO::FETCH_ASSOC);
+
+                }else{
+                    $returnData['error'] = true;
+                    $returnData['errMsg'] = '[randomNews]SQL error.';
+                }   
+                unset($queryNewsNewest);
+                return json_encode($returnData, JSON_FORCE_OBJECT);
+
+            }catch(PDOException $err){
+                $returnData['error'] = true;
+                $returnData['errMsg'] = '[NewsNewst]Connection failed: ' . $err->getMessage();
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }
         }

@@ -77,9 +77,36 @@
         </nav>
       </div>
     </div>
-    <div class="row">
+    <div class="row" ng-controller="randomContentControl">
       <div class="col-lg-10 col-lg-offset-1 col-md-offset-1">
-        <h2>random</h2>
+        
+        <div ng-if="isNews" ng-repeat="article in news">
+          <div class="row">
+            <h4>{{article.newsTitle}}</h4>
+            <p>
+              {{article.newsContent}}
+            </p>
+            <p><a href="#Nyhed/{{article.newsId}}">LÆS MERE...</a></p>
+          </div>
+        </div>
+
+        <div ng-if="isProducts" ng-repeat="product in products">
+            <div class="row">
+                <div class="col-sm-4">
+                  <img src="./assets/media/{{product.pictureTypeFolderPath}}/{{product.pictureFilename}}" height="85" width="85">
+                </div>
+                <div class="col-sm-6">
+                   <p>{{product.categoryName}}</p>
+                  <p>{{product.productDescription}}</p>
+                  <p>DKK {{product.productPrice}},-</p>
+                </div>
+                
+                  <a href="#Produkt/{{product.prouctId}}" class="info-btn col-sm-offset-3">Info</a>
+                 
+                  <br><br>
+            </div>
+        </div>
+
       </div>
     </div>
   </div>

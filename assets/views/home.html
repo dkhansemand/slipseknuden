@@ -1,13 +1,17 @@
-<div class="">
-    <div class="col-lg-6">
-        <div class="row">
-            <img class="col-lg-8 pull-left" src="./assets/media/products/1_klassisk_brun.jpg">
+<div class="row" ng-controller="randomProductControl">
+    <div ng-repeat="product in products">
+        <div class="col-lg-6">
+            <div class="row">
+                <img class="col-lg-8 pull-left" src="./assets/media/{{product.pictureTypeFolderPath}}/{{product.pictureFilename}}">
+            </div>
+            <h4>{{product.categoryName}}</h4>
+            <p>{{product.productDescription}}</p>
+            <h4>DKK {{product.productPrice}},-</h4>
+            <a href="#Produkt/{{product.productId}}" class="info-btn">Info</a>
         </div>
-        <h4>Produkt kategori</h4>
-        <p>Beskrivelse</p>
-        <a href="#Produkt/1" class="info-btn">Info</a>
     </div>
 </div>
+
 <div class="row">
     <div class="col-lg-12">
         <h3>{{pageTitle}}</h3>
