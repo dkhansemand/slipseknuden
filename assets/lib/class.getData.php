@@ -4,15 +4,15 @@
 
         public function categories(){
             try{
-                $conn = $this->newQuery("SELECT categoryId, categoryName FROM categories WHERE categoryActive = 1 ORDER BY categoryPosition ASC");
-                if($conn->execute()){
-                    $returnData = $conn->fetchAll(PDO::FETCH_ASSOC);
+                $queryCategories = $this->newQuery("SELECT categoryId, categoryName FROM categories WHERE categoryActive = 1 ORDER BY categoryPosition ASC");
+                if($queryCategories->execute()){
+                    $returnData = $queryCategories->fetchAll(PDO::FETCH_ASSOC);
                 }else{
                     $returnData['error'] = true;
                     $returnData['errMsg'] = '[Categories]SQL error.';
                 }
                 
-                unset($conn);
+                unset($queryCategories);
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }catch(PSOException $err){
                 $conn = null;
@@ -35,7 +35,7 @@
                     $returnData['errMsg'] = '[Page]SQL error.';
                 }
                 
-                unset($conn);
+                unset($queryPage);
                 return json_encode($returnData, JSON_FORCE_OBJECT);
             }catch(PDOException $err){
                 $returnData['error'] = true;

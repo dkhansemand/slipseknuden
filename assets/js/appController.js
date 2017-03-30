@@ -1,7 +1,7 @@
 var app = angular.module('slipseknuden', ['ngRoute']);
 
 /*
- * Define routes with controller and templat.
+ * Define routes with controller and template.
  * Default route set to "hjem" if the route don't exist
  */
 

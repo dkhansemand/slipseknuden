@@ -28,9 +28,9 @@
 
                     $logUser['logCode'] = 1;
                     $logUser['logMsg'] = 'Bruger session start (' . $result['username'] . ')';
-                    $logUser['logId'] = $result['userId'];
-                    $log->logUser($logUser);
-
+                    $logUser['logUserId'] = $result['userId'];
+                    $log->logToDB($logUser);
+                    $log->logToFile($logUser);
                     unset($conn, $log);
                     header('Location: ./index.php?p=Dashboard');
                     exit;
