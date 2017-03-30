@@ -58,7 +58,7 @@ app.controller('navController', function($scope, $location){
         console.log(event);
         var searchVal = $('#searchForm #search').val();
         window.location = '#Soeg/'+searchVal;
-
+        $('#searchForm #search').val('');
     });
 });
 

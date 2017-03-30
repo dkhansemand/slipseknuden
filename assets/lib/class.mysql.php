@@ -15,16 +15,16 @@ class dbconnector {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ));
             return $PDOConn;
-        }catch(PDOExecption $err){
+        }catch(PDOException $err){
             $PDOConn = null;
-            echo 'Connection failed: ' . $err->getMessage();
+            return 'Connection failed: ' . $err->getMessage();
         }
     }
     public function testConnection(){
         try{
             $conn = $this->newPDOConn();
             return "Connection is working fine to server: " . self::SERVER;
-        }catch(PDOExecption $err){
+        }catch(PDOException $err){
             $conn = null;
             return 'Connection failed: ' . $err->getMessage();
         }
@@ -38,7 +38,7 @@ class dbconnector {
             return $query;
          }catch(PDOException $e){
              $conn = null;
-             echo $e->getMessage();
+             return $e->getMessage();
          }
     }
 }
